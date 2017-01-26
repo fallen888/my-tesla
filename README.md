@@ -13,6 +13,6 @@ Basically the service takes the following steps:
  * Send SMS to remind me to plug in
 
 Sample SMS messages:
-![SMS message example](https://github.com/fallen888/my-tesla/tree/master/images/sms_screenshot.png "SMS message example")
+![SMS message example](https://raw.githubusercontent.com/fallen888/my-tesla/master/images/sms_screenshot.png "SMS message example")
 
 Service is using a free SMS service, just for my personal use - http://textbelt.com/
