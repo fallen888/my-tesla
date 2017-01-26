@@ -16,4 +16,6 @@ Sample SMS messages:
 
 ![SMS message example](https://github.com/fallen888/my-tesla/blob/master/images/sms_screenshot.png?raw=true "SMS message example")
 
-Service is using a free SMS service, just for my personal use - http://textbelt.com/
+I'm leveraging a free SMS service, just for my personal use - http://textbelt.com/
+
+I also found this site very handy for generating C# models based on JSON results, and recommend its use whenever JSON structure changes - http://json2csharp.com/
