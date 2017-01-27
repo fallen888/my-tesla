@@ -8,6 +8,7 @@ using System.ServiceProcess;
 using System.Timers;
 
 using Newtonsoft.Json;
+using log4net;
 
 using MyTesla.Models;
 
@@ -16,6 +17,8 @@ namespace MyTesla
 {
 	public partial class ReminderService : ServiceBase
 	{
+		private ILog fileLogger = null;
+		private ILog smtpLogger = null;
 		private Timer timer = new Timer();
 		private string homeCheckTime = ConfigurationManager.AppSettings["home_check_time"];
 		private int homeCheckHour = 0;
@@ -53,7 +56,7 @@ namespace MyTesla
 
 							using (var response = client.PostAsJsonAsync<object>(requestUri, content).Result)
 							{
-								string responseData = response.Content.ReadAsStringAsync().Result;
+								string responseData = response.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
 								var model = JsonConvert.DeserializeObject<LoginResponse>(responseData);
 								access_token = model.access_token;
 								accessTokenExpirationDate = DateTime.Now.AddSeconds(Convert.ToInt32(model.expires_in));
@@ -69,43 +72,67 @@ namespace MyTesla
 
 		public ReminderService()
 		{
+			fileLogger = LogManager.GetLogger("FileAppender");
+			smtpLogger = LogManager.GetLogger("SmtpAppender");
+
 			InitializeComponent();
 		}
 
 		protected override void OnStart(string[] args)
 		{
-			var timeParts = homeCheckTime.Split(" ".ToCharArray());
-			var hourMinParts = timeParts[0].Split(":".ToCharArray());
-			homeCheckHour = Convert.ToInt32(hourMinParts[0]);
-			homeCheckMinute = Convert.ToInt32(hourMinParts[1]);
-			homeCheckAMorPM = timeParts[1];
-			
-			timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
-			//providing the time in miliseconds 
-			timer.Interval = 60000; // 1 minute
-			timer.AutoReset = true;
-			timer.Enabled = true;
-			timer.Start();
+			try
+			{
+				var timeParts = homeCheckTime.Split(" ".ToCharArray());
+				var hourMinParts = timeParts[0].Split(":".ToCharArray());
+				homeCheckHour = Convert.ToInt32(hourMinParts[0]);
+				homeCheckMinute = Convert.ToInt32(hourMinParts[1]);
+				homeCheckAMorPM = timeParts[1];
+
+				timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
+				//providing the time in miliseconds 
+				timer.Interval = 60000; // 1 minute
+				timer.AutoReset = true;
+				timer.Enabled = true;
+				timer.Start();
+
+				fileLogger.Info("Service started.");
+			}
+			catch (Exception ex)
+			{
+				fileLogger.Error(ex.ToString());
+				smtpLogger.Error(ex.ToString());
+			}
 		}
+
 
 		private void Timer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			if (DateTime.Now >= (lastReminderSentAt.AddMinutes(reminder_interval)))
+			try
 			{
-				var homeCheckTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, (homeCheckAMorPM == "PM" ? homeCheckHour + 12 : homeCheckHour), homeCheckMinute, 0);
-
-				if (DateTime.Now >= homeCheckTime)
+				if (DateTime.Now >= (lastReminderSentAt.AddMinutes(reminder_interval)))
 				{
-					DoChargingCheck();
+					var homeCheckTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, (homeCheckAMorPM == "PM" ? homeCheckHour + 12 : homeCheckHour), homeCheckMinute, 0);
+
+					if (DateTime.Now >= homeCheckTime)
+					{
+						DoChargingCheck();
+					}
 				}
 			}
+			catch (Exception ex)
+			{
+				fileLogger.Error(ex.ToString());
+				smtpLogger.Error(ex.ToString());
+			}
 		}
-		
+
+
 		protected override void OnContinue()
 		{
 			base.OnContinue();
 			timer.Start();
 		}
+
 
 		protected override void OnPause()
 		{
@@ -113,11 +140,13 @@ namespace MyTesla
 			timer.Stop();
 		}
 
+
 		protected override void OnShutdown()
 		{
 			base.OnShutdown();
 			timer.Stop();
 		}
+
 
 		protected override void OnStop()
 		{
@@ -134,59 +163,53 @@ namespace MyTesla
 				// Get list of vehicles.
 				using (var vehiclesResponse = client.GetAsync("api/1/vehicles").Result)
 				{
-					if (vehiclesResponse.IsSuccessStatusCode)
+					var vehiclesJson = vehiclesResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+					var vehicles = JsonConvert.DeserializeObject<TeslaResponse<List<Vehicle>>>(vehiclesJson).Content;
+
+					if (vehicles.Count > 0)
 					{
-						var vehiclesJson = vehiclesResponse.Content.ReadAsStringAsync().Result;
-						var vehicles = JsonConvert.DeserializeObject<TeslaResponse<List<Vehicle>>>(vehiclesJson).Content;
+						var vehicle = vehicles[0];
 
-						if (vehicles.Count > 0)
+						// Get vehicle's drive state.
+						using (var driveStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/drive_state").Result)
 						{
-							var vehicle = vehicles[0];
+							var driveStateJson = driveStateResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+							var driveState = JsonConvert.DeserializeObject<TeslaResponse<DriveState>>(driveStateJson).Content;
 
-							// Get vehicle's drive state.
-							using (var driveStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/drive_state").Result)
+							var sCoord = new GeoCoordinate(home_lat, home_long);
+							var eCoord = new GeoCoordinate(driveState.latitude.Value, driveState.longitude.Value);
+
+							var distanceFromHome = sCoord.GetDistanceTo(eCoord);    // in meters.
+
+							// Is vehicle close to home?
+							if (distanceFromHome <= 50)
 							{
-								if (driveStateResponse.IsSuccessStatusCode)
+								// Get vehicle's charge state.
+								using (var chargeStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/charge_state").Result)
 								{
-									var driveStateJson = driveStateResponse.Content.ReadAsStringAsync().Result;
-									var driveState = JsonConvert.DeserializeObject<TeslaResponse<DriveState>>(driveStateJson).Content;
+									var chargeStateJson = chargeStateResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+									var chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(chargeStateJson).Content;
 
-									var sCoord = new GeoCoordinate(home_lat, home_long);
-									var eCoord = new GeoCoordinate(driveState.latitude.Value, driveState.longitude.Value);
-
-									var distanceFromHome = sCoord.GetDistanceTo(eCoord);    // in meters.
-
-									// Is vehicle close to home?
-									if (distanceFromHome <= 50)
+									// Send SMS reminder if not connected to charger.
+									if (chargeState.charging_state == "Disconnected")
 									{
-										// Get vehicle's charge state.
-										using (var chargeStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/charge_state").Result)
+										Messenger.SendText(PHONE_NUMBER,
+															$"{vehicle.display_name}'s battery is at {chargeState.battery_level}% with a range of {chargeState.battery_range} miles. You may want to plug in tonight.",
+															delegate (string response)
 										{
-											if (chargeStateResponse.IsSuccessStatusCode)
-											{
-												var chargeStateJson = chargeStateResponse.Content.ReadAsStringAsync().Result;
-												var chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(chargeStateJson).Content;
+											Console.WriteLine($"Response: {response}");
+										});
 
-												if (chargeState.charging_state == "Disconnected")
-												{
-													Messenger.SendText(PHONE_NUMBER,
-																	   $"{vehicle.display_name}'s battery is at {chargeState.battery_level}% with a range of {chargeState.battery_range} miles. You may want to plug in tonight.",
-																	   delegate (string response)
-													{
-														Console.WriteLine($"Response: {response}");
-													});
-
-													lastReminderSentAt = DateTime.Now;
-												}
-											}
-										}
-
+										lastReminderSentAt = DateTime.Now;
 									}
 								}
+
 							}
 
 						}
+
 					}
+
 				}
 					
 

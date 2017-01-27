@@ -5,6 +5,9 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
+using log4net.Config;
+
+
 namespace MyTesla
 {
 	static class Program
@@ -14,14 +17,8 @@ namespace MyTesla
 		/// </summary>
 		static void Main()
 		{
-			ServiceBase[] ServicesToRun;
-
-			ServicesToRun = new ServiceBase[]
-			{
-				new ReminderService()
-			};
-
-			ServiceBase.Run(ServicesToRun);
+			ServiceBase.Run(new ReminderService());
 		}
+
 	}
 }
