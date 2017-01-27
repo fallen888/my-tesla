@@ -1,10 +1,8 @@
 # my-tesla
 Personal project to interact with my Tesla
 
-I have a terrible memory and have forgotten to plug in my car to charge over night several times. Usually it's not a big deal at all (first-world problems), but it's still a minor annoyance. 
-So I decided to create a small Windows service (runs on my media server at home) to remind me to plug in to charge. 
-
-Caution: This is a very basic application with some dirty, ugly code. Future enhancements should definitely include some code clean-up, error logging, etc.
+I have terrible memory and have forgotten to plug in my car to charge over night several times. Usually it's not a big deal at all (first-world problems), but it's still a minor annoyance. 
+So I decided to create a small Windows service to remind me to plug in to charge. 
 
 Basically the service takes the following steps:
  * Check if it's time to charge (configured to >= 9 PM for me)
