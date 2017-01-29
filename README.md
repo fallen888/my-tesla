@@ -8,12 +8,6 @@ Basically the service takes the following steps:
  * Check if it's time to charge (configured to >= 9 PM for me)
  * Check if vehicle is at home (within 50 meters of my home's lat/long coordinates)
  * Check if vehicle is currently disconnected from charger
- * Send SMS to remind me to plug in
+ * Send email to remind me to plug in
 
-Sample SMS messages:
-
-![SMS message example](https://github.com/fallen888/my-tesla/blob/master/images/sms_screenshot.png?raw=true "SMS message example")
-
-I'm leveraging a free SMS service, just for my personal use - http://textbelt.com/
-
-I also found this site very handy for generating C# models based on JSON results, and recommend its use whenever JSON structure changes - http://json2csharp.com/
+I found this site very handy for generating C# models based on JSON results, and recommend its use whenever JSON structure changes - http://json2csharp.com/

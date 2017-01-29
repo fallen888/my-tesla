@@ -8,6 +8,7 @@ using System.ServiceProcess;
 using System.Timers;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using log4net;
 
 using MyTesla.Models;
@@ -29,7 +30,6 @@ namespace MyTesla
 		private string TESLA_CLIENT_SECRET = ConfigurationManager.AppSettings["TESLA_CLIENT_SECRET"];
 		private string EMAIL = ConfigurationManager.AppSettings["email"];
 		private string PASSWORD = ConfigurationManager.AppSettings["password"];
-		private string PHONE_NUMBER = ConfigurationManager.AppSettings["phone"];
 		private double home_lat = Convert.ToDouble(ConfigurationManager.AppSettings["home_lat"]);
 		private double home_long = Convert.ToDouble(ConfigurationManager.AppSettings["home_long"]);
 		private int reminder_interval = Convert.ToInt32(ConfigurationManager.AppSettings["reminder_interval"]);
@@ -48,6 +48,8 @@ namespace MyTesla
 				if (access_token == null || DateTime.Now >= accessTokenExpirationDate)
 				{
 					// Log in.
+					fileLogger.Info("Retrieving access token...");
+
 					using (var client = new HttpClient { BaseAddress = baseAddress })
 					{
 						using (var content = new StringContent(String.Empty))
@@ -60,6 +62,8 @@ namespace MyTesla
 								var model = JsonConvert.DeserializeObject<LoginResponse>(responseData);
 								access_token = model.access_token;
 								accessTokenExpirationDate = DateTime.Now.AddSeconds(Convert.ToInt32(model.expires_in));
+
+								fileLogger.Info("New access token acquired.");
 							}
 						}
 					}
@@ -115,7 +119,9 @@ namespace MyTesla
 
 					if (DateTime.Now >= homeCheckTime)
 					{
+						fileLogger.Info("Starting charging check...");
 						DoChargingCheck();
+						fileLogger.Info("Charging check complete.");
 					}
 				}
 			}
@@ -131,6 +137,7 @@ namespace MyTesla
 		{
 			base.OnContinue();
 			timer.Start();
+			fileLogger.Info("Service continued.");
 		}
 
 
@@ -138,6 +145,7 @@ namespace MyTesla
 		{
 			base.OnPause();
 			timer.Stop();
+			fileLogger.Info("Service paused.");
 		}
 
 
@@ -150,6 +158,7 @@ namespace MyTesla
 
 		protected override void OnStop()
 		{
+			fileLogger.Info("Service stopped.");
 		}
 
 
@@ -168,6 +177,8 @@ namespace MyTesla
 
 					if (vehicles.Count > 0)
 					{
+						fileLogger.Info("Found a vehicle.");
+
 						var vehicle = vehicles[0];
 
 						// Get vehicle's drive state.
@@ -184,26 +195,35 @@ namespace MyTesla
 							// Is vehicle close to home?
 							if (distanceFromHome <= 50)
 							{
+								fileLogger.Info("Vehicle is at home.");
+
 								// Get vehicle's charge state.
 								using (var chargeStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/charge_state").Result)
 								{
 									var chargeStateJson = chargeStateResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
 									var chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(chargeStateJson).Content;
 
-									// Send SMS reminder if not connected to charger.
+									// Send reminder if not connected to charger.
 									if (chargeState.charging_state == "Disconnected")
 									{
-										Messenger.SendText(PHONE_NUMBER,
-															$"{vehicle.display_name}'s battery is at {chargeState.battery_level}% with a range of {chargeState.battery_range} miles. You may want to plug in tonight.",
-															delegate (string response)
-										{
-											Console.WriteLine($"Response: {response}");
-										});
+										// Log/send alert.
+										var message = $"{vehicle.display_name}'s battery is at {chargeState.battery_level}% with a range of {chargeState.battery_range} miles. You may want to plug in tonight.";
+
+										fileLogger.Warn(message);
+										smtpLogger.Warn(message);
 
 										lastReminderSentAt = DateTime.Now;
 									}
+									else
+									{
+										fileLogger.Info("Vehicle is plugged in.");
+									}
 								}
 
+							}
+							else
+							{
+								fileLogger.Info("Vehicle is not at home.");
 							}
 
 						}

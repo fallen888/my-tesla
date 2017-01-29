@@ -59,10 +59,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messenger.cs" />
     <Compile Include="Models\ChargeState.cs" />
     <Compile Include="Models\DriveState.cs" />
     <Compile Include="Models\LoginResponse.cs" />
+    <Compile Include="Models\SmsResponse.cs" />
     <Compile Include="Models\TeslaResponse.cs" />
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="ProjectInstaller.cs">
