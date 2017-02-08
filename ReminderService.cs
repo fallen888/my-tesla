@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Device.Location;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.ServiceProcess;
@@ -94,7 +95,7 @@ namespace MyTesla
 
 				timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
 				//providing the time in miliseconds 
-				timer.Interval = 60000; // 1 minute
+				timer.Interval = 120000; // 2 minutes
 				timer.AutoReset = true;
 				timer.Enabled = true;
 				timer.Start();
@@ -184,6 +185,8 @@ namespace MyTesla
 						// Get vehicle's drive state.
 						using (var driveStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/drive_state").Result)
 						{
+							if (!ValidateApiReponse(driveStateResponse, "GET drive_state")) return;
+
 							var driveStateJson = driveStateResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
 							var driveState = JsonConvert.DeserializeObject<TeslaResponse<DriveState>>(driveStateJson).Content;
 
@@ -200,6 +203,8 @@ namespace MyTesla
 								// Get vehicle's charge state.
 								using (var chargeStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/charge_state").Result)
 								{
+									if (!ValidateApiReponse(chargeStateResponse, "GET charge_state")) return;
+
 									var chargeStateJson = chargeStateResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
 									var chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(chargeStateJson).Content;
 
@@ -236,6 +241,23 @@ namespace MyTesla
 			}
 
 		}
+
+
+		protected bool ValidateApiReponse(HttpResponseMessage response, string apiCallDescription)
+		{
+			if (response.StatusCode != HttpStatusCode.OK)
+			{
+				var errorMessage = $"Failed to {apiCallDescription}. \nDetails: " + response.Content.ReadAsStringAsync().Result;
+
+				fileLogger.Error(errorMessage);
+				smtpLogger.Error(errorMessage);
+
+				return false;
+			}
+
+			return true;
+		}
+
 
 	}
 }
