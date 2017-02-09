@@ -17,7 +17,7 @@ namespace MyTesla.Models
 		public object color { get; set; }
 		public List<string> tokens { get; set; }
 		public string state { get; set; }
-		public object in_service { get; set; }
+		public bool? in_service { get; set; }
 		public string id_s { get; set; }
 		public bool? remote_start_enabled { get; set; }
 		public bool? calendar_enabled { get; set; }

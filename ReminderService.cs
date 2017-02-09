@@ -94,8 +94,7 @@ namespace MyTesla
 				homeCheckAMorPM = timeParts[1];
 
 				timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
-				//providing the time in miliseconds 
-				timer.Interval = 120000; // 2 minutes
+				timer.Interval = 600000; // 10 minutes
 				timer.AutoReset = true;
 				timer.Enabled = true;
 				timer.Start();
@@ -182,12 +181,18 @@ namespace MyTesla
 
 						var vehicle = vehicles[0];
 
+						if (vehicle.in_service.HasValue && vehicle.in_service.Value)
+						{
+							fileLogger.Info("Vehicle is currently in service.");
+							return;
+						}
+
 						// Get vehicle's drive state.
 						using (var driveStateResponse = client.GetAsync($"api/1/vehicles/{vehicle.id}/data_request/drive_state").Result)
 						{
 							if (!ValidateApiReponse(driveStateResponse, "GET drive_state")) return;
 
-							var driveStateJson = driveStateResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+							var driveStateJson = driveStateResponse.Content.ReadAsStringAsync().Result;
 							var driveState = JsonConvert.DeserializeObject<TeslaResponse<DriveState>>(driveStateJson).Content;
 
 							var sCoord = new GeoCoordinate(home_lat, home_long);
@@ -205,7 +210,7 @@ namespace MyTesla
 								{
 									if (!ValidateApiReponse(chargeStateResponse, "GET charge_state")) return;
 
-									var chargeStateJson = chargeStateResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+									var chargeStateJson = chargeStateResponse.Content.ReadAsStringAsync().Result;
 									var chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(chargeStateJson).Content;
 
 									// Send reminder if not connected to charger.
@@ -245,7 +250,7 @@ namespace MyTesla
 
 		protected bool ValidateApiReponse(HttpResponseMessage response, string apiCallDescription)
 		{
-			if (response.StatusCode != HttpStatusCode.OK)
+			if (!response.IsSuccessStatusCode)
 			{
 				var errorMessage = $"Failed to {apiCallDescription}. \nDetails: " + response.Content.ReadAsStringAsync().Result;
 
