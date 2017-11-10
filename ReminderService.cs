@@ -40,7 +40,10 @@ namespace MyTesla
 		private string access_token = null;
 		private DateTime accessTokenExpirationDate = DateTime.Now.AddMonths(1);
 
-		private DateTime lastReminderSentAt = new DateTime(2000, 1, 1);
+        private DateTime lastReminderSentAt = new DateTime(2000, 1, 1);
+
+        private IDictionary<string, DateTime> trackedErrors = null;
+
 
 		private string AccessToken
 		{
@@ -81,7 +84,10 @@ namespace MyTesla
 			smtpLogger = LogManager.GetLogger("SmtpAppender");
 
 			InitializeComponent();
-		}
+
+            trackedErrors = new Dictionary<string, DateTime>();
+        }
+
 
 		protected override void OnStart(string[] args)
 		{
@@ -93,7 +99,9 @@ namespace MyTesla
 				homeCheckMinute = Convert.ToInt32(hourMinParts[1]);
 				homeCheckAMorPM = timeParts[1];
 
-				timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
+                trackedErrors.Clear();
+
+                timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
 				timer.Interval = 600000; // 10 minutes
 				timer.AutoReset = true;
 				timer.Enabled = true;
@@ -104,7 +112,7 @@ namespace MyTesla
 			catch (Exception ex)
 			{
 				fileLogger.Error(ex.ToString());
-				smtpLogger.Error(ex.ToString());
+                SmtpLogError(ex.ToString());
 			}
 		}
 
@@ -113,7 +121,9 @@ namespace MyTesla
 		{
 			try
 			{
-				if (DateTime.Now >= (lastReminderSentAt.AddMinutes(reminder_interval)))
+                CleanupOldErrors();
+
+                if (DateTime.Now >= (lastReminderSentAt.AddMinutes(reminder_interval)))
 				{
 					var homeCheckTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, (homeCheckAMorPM == "PM" ? homeCheckHour + 12 : homeCheckHour), homeCheckMinute, 0);
 
@@ -128,8 +138,8 @@ namespace MyTesla
 			catch (Exception ex)
 			{
 				fileLogger.Error(ex.ToString());
-				smtpLogger.Error(ex.ToString());
-			}
+                SmtpLogError(ex.ToString());
+            }
 		}
 
 
@@ -254,15 +264,49 @@ namespace MyTesla
 			{
 				var errorMessage = $"Failed to {apiCallDescription}. \nDetails: " + response.Content.ReadAsStringAsync().Result;
 
-				fileLogger.Error(errorMessage);
-				smtpLogger.Error(errorMessage);
+                fileLogger.Error(errorMessage);
+                SmtpLogError(errorMessage);
 
-				return false;
+                return false;
 			}
 
 			return true;
 		}
 
 
-	}
+        protected void SmtpLogError(string errorMessage) {
+            if (!trackedErrors.ContainsKey(errorMessage)) {
+                // First error instance.
+                // Send email notification.
+                smtpLogger.Error(errorMessage);
+
+                // Track new error.
+                trackedErrors.Add(errorMessage, DateTime.Now);
+            }
+            else {
+                // Error instance exists.
+                // Check how recently notified about it.
+                var lastNotified = trackedErrors[errorMessage];
+
+                if (DateTime.Now.Subtract(lastNotified).Minutes >= 30) {
+                    // It's been half an hour since last notification was sent. Send another.
+                    smtpLogger.Error(errorMessage);
+
+                    // Update last sent.
+                    trackedErrors[errorMessage] = DateTime.Now;
+                }
+            }
+        }
+
+
+        protected void CleanupOldErrors() {
+            foreach (var key in trackedErrors.Keys) {
+                // If error was last tracked 6 or more hours ago, remove it.
+                if (DateTime.Now.Subtract(trackedErrors[key]).Hours >= 6) {
+                    trackedErrors.Remove(key);
+                }
+            }
+        }
+
+    }
 }
