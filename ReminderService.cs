@@ -84,8 +84,10 @@ namespace MyTesla
 			smtpLogger = LogManager.GetLogger("SmtpAppender");
 
 			InitializeComponent();
-
+            
             trackedErrors = new Dictionary<string, DateTime>();
+
+            //OnStart(new string[0]);
         }
 
 
@@ -108,7 +110,9 @@ namespace MyTesla
 				timer.Start();
 
 				fileLogger.Info("Service started.");
-			}
+
+                //Timer_Elapsed(null, null);
+            }
 			catch (Exception ex)
 			{
 				fileLogger.Error(ex.ToString());
@@ -300,7 +304,10 @@ namespace MyTesla
 
 
         protected void CleanupOldErrors() {
-            foreach (var key in trackedErrors.Keys) {
+            string[] errorKeys = null;
+            trackedErrors.Keys.CopyTo(errorKeys, 0);
+
+            foreach (var key in errorKeys) {
                 // If error was last tracked 6 or more hours ago, remove it.
                 if (DateTime.Now.Subtract(trackedErrors[key]).Hours >= 6) {
                     trackedErrors.Remove(key);
