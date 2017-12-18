@@ -304,7 +304,7 @@ namespace MyTesla
 
 
         protected void CleanupOldErrors() {
-            string[] errorKeys = null;
+            var errorKeys = new string[0];
             trackedErrors.Keys.CopyTo(errorKeys, 0);
 
             foreach (var key in errorKeys) {
