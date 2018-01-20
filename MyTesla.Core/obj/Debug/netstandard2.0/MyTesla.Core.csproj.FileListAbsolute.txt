@@ -1,0 +1,9 @@
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\bin\Debug\netstandard2.0\MyTesla.Core.deps.json
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\bin\Debug\netstandard2.0\MyTesla.Core.dll
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\bin\Debug\netstandard2.0\MyTesla.Core.pdb
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\obj\Debug\netstandard2.0\MyTesla.Core.csprojResolveAssemblyReference.cache
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\obj\Debug\netstandard2.0\MyTesla.Core.csproj.CoreCompileInputs.cache
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\obj\Debug\netstandard2.0\MyTesla.Core.AssemblyInfoInputs.cache
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\obj\Debug\netstandard2.0\MyTesla.Core.AssemblyInfo.cs
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\obj\Debug\netstandard2.0\MyTesla.Core.dll
+C:\Users\Konstantin\Source\Repos\my-tesla\MyTesla.Core\obj\Debug\netstandard2.0\MyTesla.Core.pdb

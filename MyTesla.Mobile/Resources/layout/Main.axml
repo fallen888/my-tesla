@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:a="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:gravity="top|center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:minHeight="?attr/actionBarSize"
+      android:background="?attr/colorPrimary"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+  <RelativeLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+    <FrameLayout
+      android:id="@+id/progress_overlay"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:alpha="0.3"
+      android:animateLayoutChanges="true"
+      android:background="@android:color/black"
+      android:foregroundGravity="center"
+      android:clickable="true"
+      android:visibility="visible">
+
+      <ProgressBar android:id="@+id/spinner"
+                   style="@android:style/Widget.ProgressBar.Large"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:foregroundGravity="center"
+                   android:layout_gravity = "center"
+                   android:indeterminate="true"
+                   android:visibility="visible" />
+
+    </FrameLayout>
+
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:fillViewport="true" >
+
+      <LinearLayout android:id="@+id/rootContainer"
+                    android:orientation="vertical"
+                    android:gravity="top|center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+        <TextView android:id="@+id/yourTeslas"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="10dp" 
+                  android:gravity="center_horizontal"
+                  android:textSize="25sp"
+                  android:visibility="gone" />
+
+        <LinearLayout android:id="@+id/loginContainer"
+                      android:orientation="vertical"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:visibility="invisible"
+                      android:focusableInTouchMode="true">
+
+          <EditText android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
+
+          <EditText android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
+
+          <Button android:id="@+id/loginButton"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Sign In" />
+        </LinearLayout>
+
+        <!--<ProgressBar android:id="@+id/spinner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@android:style/Widget.ProgressBar.Large"
+          android:layout_marginRight="5dp"
+          android:visibility="gone"/>-->
+
+      </LinearLayout>
+
+    </ScrollView>
+
+  </RelativeLayout>
+
+</LinearLayout>
