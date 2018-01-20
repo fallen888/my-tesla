@@ -9,11 +9,13 @@ using V7 = Android.Support.V7.Widget;
 using Android.Animation;
 using Android.Views.InputMethods;
 using Android.Content.PM;
+using Android.Graphics;
+using System.Net;
 
 namespace MyTesla.Mobile
 {
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    public class BaseActivity : AppCompatActivity, Animator.IAnimatorListener
+    public class BaseActivity : AppCompatActivity
     {
         protected PrefHelper _prefHelper = null;
         protected TeslaAPI _teslaAPI = null;
@@ -38,21 +40,11 @@ namespace MyTesla.Mobile
         {
             get
             {
-                DateTime expiration;
-                string expirationString = _prefHelper.GetPrefString(Constants.PrefKeys.ACCESS_TOKEN_EXPIRATION);
-
-                if (!String.IsNullOrEmpty(expirationString)) {
-                    expiration = DateTime.Parse(expirationString);
-                }
-                else {
-                    expiration = DateTime.MinValue;
-                }
-
-                return expiration;
+                return _prefHelper.GetPrefDateTime(Constants.PrefKeys.ACCESS_TOKEN_EXPIRATION);
             }
             set
             {
-                _prefHelper.SetPref(Constants.PrefKeys.ACCESS_TOKEN_EXPIRATION, value.ToString());
+                _prefHelper.SetPref(Constants.PrefKeys.ACCESS_TOKEN_EXPIRATION, value);
             }
         }
 
@@ -83,52 +75,27 @@ namespace MyTesla.Mobile
         }
 
 
-        /**
-         * @param view         View to animate
-         * @param toVisibility Visibility at the end of animation
-         * @param toAlpha      Alpha at the end of animation
-         * @param duration     Animation duration in ms
-         */
-        public void AnimateView(View view, ViewStates toVisibility, int duration) {
-            this._view = view;
-            this._toVisibility = toVisibility;
+        protected void HideKeyboard() {
+            RunOnUiThread(() => {
+                InputMethodManager inputManager = (InputMethodManager)this.GetSystemService(Context.InputMethodService);
+                inputManager.HideSoftInputFromWindow(this.CurrentFocus.WindowToken, HideSoftInputFlags.NotAlways);
+            });
+        }
 
-            bool show = (toVisibility == ViewStates.Visible);
 
-            if (show) {
-                view.Alpha = 0;
+        protected Bitmap GetImageBitmapFromUrl(string url) {
+            Bitmap imageBitmap = null;
+
+            using (var webClient = new WebClient()) {
+                var imageBytes = webClient.DownloadData(url);
+
+                if (imageBytes != null && imageBytes.Length > 0) {
+                    imageBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                }
             }
 
-            view.Visibility = toVisibility;
-            view.BringToFront();
-
-            var animator = view.Animate();
-            animator.SetDuration(duration);
-            animator.Alpha(show ? 1 : 0);
-            animator.SetListener(this);
+            return imageBitmap;
         }
 
-
-        public void OnAnimationCancel(Animator animation) {
-            //throw new NotImplementedException();
-        }
-
-        public void OnAnimationEnd(Animator animation) {
-            this._view.Visibility = this._toVisibility;
-        }
-
-        public void OnAnimationRepeat(Animator animation) {
-            //throw new NotImplementedException();
-        }
-
-        public void OnAnimationStart(Animator animation) {
-            //throw new NotImplementedException();
-        }
-
-
-        protected void HideKeyboard() {
-            InputMethodManager inputManager = (InputMethodManager)this.GetSystemService(Context.InputMethodService);
-            inputManager.HideSoftInputFromWindow(this.CurrentFocus.WindowToken, HideSoftInputFlags.NotAlways);
-        }
     }
 }

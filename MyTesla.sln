@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTesla", "MyTesla.Service\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTesla.Mobile", "MyTesla.Mobile\MyTesla.Mobile.csproj", "{44DEC3D4-317B-41B2-B5F6-F5BAA9C8B7CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTesla.Core", "MyTesla.Core\MyTesla.Core.csproj", "{F1334E0D-43AD-4FBA-A34D-367727394164}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTesla.Core", "MyTesla.Core\MyTesla.Core.csproj", "{F1334E0D-43AD-4FBA-A34D-367727394164}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,7 +38,6 @@ Global
 		{92F7B94E-65E0-461A-8974-4C63096207D9}.AppStore|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{92F7B94E-65E0-461A-8974-4C63096207D9}.AppStore|iPhoneSimulator.Build.0 = Release|Any CPU
 		{92F7B94E-65E0-461A-8974-4C63096207D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92F7B94E-65E0-461A-8974-4C63096207D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92F7B94E-65E0-461A-8974-4C63096207D9}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{92F7B94E-65E0-461A-8974-4C63096207D9}.Debug|iPhone.Build.0 = Debug|Any CPU
 		{92F7B94E-65E0-461A-8974-4C63096207D9}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU

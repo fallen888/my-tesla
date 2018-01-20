@@ -43,6 +43,19 @@ namespace MyTesla.Mobile
         }
 
 
+        public DateTime GetPrefDateTime(String key) {
+            var dateTimeString = _sharedPrefs == null ? null : _sharedPrefs.GetString(key, null);
+            DateTime result = String.IsNullOrEmpty(dateTimeString) ? DateTime.MinValue : DateTime.Parse(dateTimeString);
+
+            return result;
+        }
+
+
+        public void SetPref(String key, DateTime value) {
+            var editor = _sharedPrefs.Edit();
+            editor.PutString(key, value.ToString());
+            editor.Apply();
+        }
         public void SetPref(String key, String value) {
             var editor = _sharedPrefs.Edit();
             editor.PutString(key, value);

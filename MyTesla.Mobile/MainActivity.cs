@@ -31,9 +31,10 @@ namespace MyTesla.Mobile
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
-
-            var myToolbar = (V7.Toolbar)FindViewById(Resource.Id.toolbar);
-            SetSupportActionBar(myToolbar);
+            RunOnUiThread(() => {
+                var myToolbar = (V7.Toolbar)FindViewById(Resource.Id.toolbar);
+                SetSupportActionBar(myToolbar);
+            });
 
             /*
             Intent serviceIntent = new Intent(this, typeof(ChargeCheckService));
@@ -61,6 +62,7 @@ namespace MyTesla.Mobile
             _spinner.BringToFront();
         }
 
+
         protected async void InitApp() {
             // Validate Access Token.
             if (String.IsNullOrEmpty(this.AccessToken) || this.AccessTokenExpiration <= DateTime.Now) {
@@ -71,18 +73,19 @@ namespace MyTesla.Mobile
                 // Check user credentials.
                 if (String.IsNullOrEmpty(email) || String.IsNullOrEmpty(password)) {
                     // Show login prompt.
-                    _spinner.Visibility = ViewStates.Gone;
-                    _loginContainer.Visibility = ViewStates.Visible;
+                    ShowSpinner(false);
+
+                    RunOnUiThread(() => {
+                        _loginContainer.Visibility = ViewStates.Visible;
+                    });
                 }
                 else {
-                    RunOnUiThread(() => {
-                        _spinner.Visibility = ViewStates.Visible;
+                    ShowSpinner(true);
+                    
+                    await Task.Run(async () => {
+                        // Got credentials. Go get new access token.
+                        await GetAccessToken(email, password);
                     });
-
-                    // Got credentials. Go get new access token.
-                    await GetAccessToken(email, password);
-
-                    _spinner.Visibility = ViewStates.Gone;
                 }
             }
             else {
@@ -95,52 +98,54 @@ namespace MyTesla.Mobile
         protected async Task<bool> CheckVehicles() {
             var vehicleIds = _prefHelper.GetPrefStrings(Constants.PrefKeys.VEHICLES);
 
-            // TODO: Remove debug.
-            vehicleIds.Clear();
+            if (vehicleIds.Count > 0) {
+                var lastVehicleCheck = _prefHelper.GetPrefDateTime(Constants.PrefKeys.LAST_VEHICLE_CHECK);
+
+                if (lastVehicleCheck < DateTime.Now.AddDays(-1)) {
+                    // Last check was more than a day ago, so clear the list to force a new API GET.
+                    vehicleIds.Clear();
+                }
+            }
 
             if (vehicleIds.Count == 0) {
-                //RunOnUiThread(() => {
-                RunOnUiThread(() => {
-                    _spinner.Visibility = ViewStates.Visible;
-                });
+                ShowSpinner(true);
 
-                // No vehicles found. Go get em.
-                var vehicles = await _teslaAPI.GetVehicles();
+                await Task.Run(async () => {
+
+                    // No vehicles found. Go get em.
+                    var vehicles = await _teslaAPI.GetVehicles();
 
                     vehicles.ForEach((vehicle) => {
                         var id = vehicle.id.ToString();
-                        _prefHelper.SetPref(String.Format(Constants.PrefKeys.VEHICLE_NAME, id), vehicle.display_name);
                         _prefHelper.SetPref(String.Format(Constants.PrefKeys.VEHICLE_VIN, id), vehicle.vin);
                         _prefHelper.SetPref(String.Format(Constants.PrefKeys.VEHICLE_OPTION_CODES, id), vehicle.option_codes);
                         vehicleIds.Add(id);
                     });
 
                     _prefHelper.SetPref(Constants.PrefKeys.VEHICLES, vehicleIds);
+                });
 
-                    _spinner.Visibility = ViewStates.Gone;
-
-                    ShowVehicles();
-                //});
+                ShowSpinner(false);
+                ShowVehicles();
             }
             else {
                 ShowVehicles();
             }
 
+            _prefHelper.SetPref(Constants.PrefKeys.LAST_VEHICLE_CHECK, DateTime.Now.ToString());
             return true;
         }
 
 
         protected void ShowVehicles() {
-            RunOnUiThread(() => {
-                _spinner.Visibility = ViewStates.Visible;
-            });
+            ShowSpinner(true);
 
             var vehicleIds = _prefHelper.GetPrefStrings(Constants.PrefKeys.VEHICLES);
 
-            var noVehiclesFound = vehicleIds.Count == 0;
-
-            _yourTeslas.Text = noVehiclesFound ? "No vehicles found." : "Your Tesla" + (vehicleIds.Count > 1 ? "s" : String.Empty);
-            _yourTeslas.Visibility = ViewStates.Visible;
+            RunOnUiThread(() => {
+                _yourTeslas.Text = (vehicleIds.Count == 0) ? "No vehicles found." : "Your Tesla" + (vehicleIds.Count > 1 ? "s" : String.Empty);
+                _yourTeslas.Visibility = ViewStates.Visible;
+            });
 
             vehicleIds.ForEach((id) => {
                 var name = _prefHelper.GetPrefString(String.Format(Constants.PrefKeys.VEHICLE_NAME, id));
@@ -151,7 +156,6 @@ namespace MyTesla.Mobile
                 // Create new container.
                 var vehicleContainer = new RelativeLayout(this);
                 vehicleContainer.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
-                //vehicleContainer.SetBackgroundColor(Color.Beige);
                 vehicleContainer.SetForegroundGravity(GravityFlags.CenterHorizontal);
 
                 // Load image.
@@ -161,7 +165,6 @@ namespace MyTesla.Mobile
                 image.SetImageBitmap(imageBitmap);
                 image.SetForegroundGravity(GravityFlags.CenterHorizontal);
                 image.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
-                //image.SetBackgroundColor(Color.YellowGreen);
 
                 // Center image.
                 var imageLayoutParams = (RelativeLayout.LayoutParams)image.LayoutParameters;
@@ -175,7 +178,6 @@ namespace MyTesla.Mobile
                 nameLabel.Text = name;
                 nameLabel.Gravity = GravityFlags.CenterHorizontal;
                 nameLabel.TextSize = 25;
-                //nameLabel.SetBackgroundColor(Color.Pink);
                 nameLabel.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
 
                 var labelLayoutParams = (RelativeLayout.LayoutParams)nameLabel.LayoutParameters;
@@ -185,68 +187,61 @@ namespace MyTesla.Mobile
 
                 vehicleContainer.AddView(nameLabel);
 
-                _rootContainer.AddView(vehicleContainer);
-
-                _spinner.Visibility = ViewStates.Gone;
+                RunOnUiThread(() => {
+                    _rootContainer.AddView(vehicleContainer);
+                });
             });
-        //});
-        }
 
-
-        private Bitmap GetImageBitmapFromUrl(string url) {
-            Bitmap imageBitmap = null;
-
-            using (var webClient = new WebClient()) {
-                var imageBytes = webClient.DownloadData(url);
-                if (imageBytes != null && imageBytes.Length > 0) {
-                    imageBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
-                }
-            }
-
-            return imageBitmap;
+            ShowSpinner(false);
         }
 
 
         protected void RegisterEventHandlers() {
             // Login.
             _loginButton.Click += async delegate {
-                HideKeyboard();
+                await Task.Run(async () =>
+                {
+                    HideKeyboard();
 
-                if (_email.Text.Length > 0 && _password.Text.Length > 0) {
-                    RunOnUiThread(() => {
-                        _spinner.Visibility = ViewStates.Visible;
-                    });
-
-                    await GetAccessToken(_email.Text, _password.Text);
-
-                    _spinner.Visibility = ViewStates.Gone;
-                }
+                    if (_email.Text.Length > 0 && _password.Text.Length > 0) {
+                        await GetAccessToken(_email.Text, _password.Text);
+                    }
+                });
             };
         }
 
 
         protected async Task<bool> GetAccessToken(string email, string password) {
-            //RunOnUiThread(() => {
+            ShowSpinner(true);
+            
             var accessToken = await _teslaAPI.GetAccessToken(email, password);
 
-                if (accessToken != null) {
-                    _prefHelper.SetPref(Constants.PrefKeys.USER_EMAIL, email);
-                    _prefHelper.SetPref(Constants.PrefKeys.USER_PASSWORD, password);
-                    this.AccessToken = accessToken.Token;
-                    this.AccessTokenExpiration = accessToken.ExpirationDate;
+            if (accessToken != null) {
+                _prefHelper.SetPref(Constants.PrefKeys.USER_EMAIL, email);
+                _prefHelper.SetPref(Constants.PrefKeys.USER_PASSWORD, password);
+                this.AccessToken = accessToken.Token;
+                this.AccessTokenExpiration = accessToken.ExpirationDate;
 
+                RunOnUiThread(() => {
                     _loginContainer.Visibility = ViewStates.Gone;
-                    _spinner.Visibility = ViewStates.Gone;
+                });
 
-                    await CheckVehicles();
-                }
-                else {
-                    _spinner.Visibility = ViewStates.Gone;
-                    _loginButton.Visibility = ViewStates.Visible;
-                }
-            //});
+                ShowSpinner(false);
+
+                await CheckVehicles();
+            }
+            else {
+                ShowSpinner(false);
+            }
 
             return true;
+        }
+
+
+        protected void ShowSpinner(bool show) {
+            RunOnUiThread(() => {
+                _spinner.Visibility = show ? ViewStates.Visible : ViewStates.Gone;
+            });
         }
 
     }
