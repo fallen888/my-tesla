@@ -27,11 +27,12 @@ namespace MyTesla.Mobile
             public static string ACCESS_TOKEN = "ACCESS_TOKEN";
             public static string ACCESS_TOKEN_EXPIRATION = "ACCESS_TOKEN_EXPIRATION";
 
-            public static string LAST_VEHICLE_CHECK = "LAST_VEHICLE_CHECK";
             public static string VEHICLES = "VEHICLES";
             public static string VEHICLE_NAME = "VEHICLE_OPTION_NAME_{0}";
             public static string VEHICLE_VIN = "VEHICLE_VIN_{0}";
             public static string VEHICLE_OPTION_CODES = "VEHICLE_OPTION_CODES_{0}";
+            public static string LAST_VEHICLE_CHECK = "LAST_VEHICLE_CHECK";
+            public static string VEHICLE_LOCATION = "VEHICLE_LOCATION";
         }
     }
 }

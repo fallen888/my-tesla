@@ -2,14 +2,38 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:key="first_preferencescreen">
-  <CheckBoxPreference
-          android:key="wifi enabled"
-          android:title="WiFi" />
+  
+  <SwitchPreference
+          android:key="reminderNotificationsEnabled"
+          android:title="Enable reminder notifications" />
+
   <PreferenceScreen
+      android:key="chargingLocation"
+      android:title="Set charging location">
+
+      <!--<intent android:action="android.intent.action.VIEW"
+              android:targetPackage="MyTesla.Mobile"
+              android:targetClass="LocationSelectorActivity"/>-->
+    
+      <intent android:action="OPEN_LOCATION_SELECTOR" />
+</PreferenceScreen>
+
+
+  <!--<MyTesla.Mobile.LocationPreference
+        android:key="chargingLocation"
+        android:title="Set charging location"
+        android:defaultValue="12:00" />-->
+
+  <EditTextPreference
+        android:key="distanceFromChargingLocation"
+        android:title="Distance from location to consider" />
+
+  <!--<PreferenceScreen
           android:key="second_preferencescreen"
           android:title="WiFi settings">
     <CheckBoxPreference
             android:key="prefer wifi"
             android:title="Prefer WiFi" />
-  </PreferenceScreen>
+  </PreferenceScreen>-->
+
 </PreferenceScreen>
