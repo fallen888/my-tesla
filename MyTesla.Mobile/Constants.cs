@@ -32,7 +32,8 @@ namespace MyTesla.Mobile
             public static string VEHICLE_VIN = "VEHICLE_VIN_{0}";
             public static string VEHICLE_OPTION_CODES = "VEHICLE_OPTION_CODES_{0}";
             public static string LAST_VEHICLE_CHECK = "LAST_VEHICLE_CHECK";
-            public static string VEHICLE_LOCATION = "VEHICLE_LOCATION";
+            public static string VEHICLE_LOCATION_LAT = "VEHICLE_LOCATION_LAT";
+            public static string VEHICLE_LOCATION_LONG = "VEHICLE_LOCATION_LONG";
         }
     }
 }

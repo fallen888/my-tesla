@@ -11,6 +11,7 @@ using Android.Views.InputMethods;
 using Android.Content.PM;
 using Android.Graphics;
 using System.Net;
+using Android.Gms.Maps.Model;
 
 namespace MyTesla.Mobile
 {
@@ -45,6 +46,35 @@ namespace MyTesla.Mobile
             set
             {
                 _prefHelper.SetPref(Constants.PrefKeys.ACCESS_TOKEN_EXPIRATION, value);
+            }
+        }
+
+
+        protected LatLng ChargingLocation
+        {
+            get
+            {
+                LatLng location = null;
+
+                var locationLat = _prefHelper.GetPrefDouble(Constants.PrefKeys.VEHICLE_LOCATION_LAT);
+                var locationLong = _prefHelper.GetPrefDouble(Constants.PrefKeys.VEHICLE_LOCATION_LONG);
+
+                if (locationLat.HasValue && locationLong.HasValue) {
+                    location = new LatLng(locationLat.Value, locationLong.Value);
+                }
+
+                return location;
+            }
+            set
+            {
+                if (value != null) {
+                    _prefHelper.SetPref(Constants.PrefKeys.VEHICLE_LOCATION_LAT, value.Latitude);
+                    _prefHelper.SetPref(Constants.PrefKeys.VEHICLE_LOCATION_LONG, value.Longitude);
+                }
+                else {
+                    _prefHelper.RemovePref(Constants.PrefKeys.VEHICLE_LOCATION_LAT);
+                    _prefHelper.RemovePref(Constants.PrefKeys.VEHICLE_LOCATION_LONG);
+                }
             }
         }
 

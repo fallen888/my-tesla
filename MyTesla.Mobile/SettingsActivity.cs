@@ -4,12 +4,6 @@ using Android.OS;
 using Android.Content;
 using Android.Preferences;
 using Android.Content.PM;
-using Android.Content.Res;
-//using Android.Support.V7.Preferences;
-
-//android.support.v7.preference.PreferenceFragmentCompat
-
-//using Android.Support.V7.Preferences;
 
 
 namespace MyTesla.Mobile
@@ -20,15 +14,21 @@ namespace MyTesla.Mobile
         protected override void OnCreate(Bundle savedInstanceState) {
             base.OnCreate(savedInstanceState);
 
-            FragmentManager.BeginTransaction().Replace(Android.Resource.Id.Content, new MyPreferenceFragment())
+            FragmentManager.BeginTransaction().Replace(Android.Resource.Id.Content, new MyPreferenceFragment(this))
                                               .AddToBackStack(null)
                                               .Commit();
         }
 
 
         public class MyPreferenceFragment : PreferenceFragment, ISharedPreferencesOnSharedPreferenceChangeListener
-        //public class MyPreferenceFragment : PreferenceFragmentCompat, ISharedPreferencesOnSharedPreferenceChangeListener
         {
+            protected SettingsActivity activityContext = null;
+
+            public MyPreferenceFragment(SettingsActivity activityContext) : base() {
+                this.activityContext = activityContext;
+            }
+
+
             public override void OnCreate(Bundle savedInstanceState) {
                 base.OnCreate(savedInstanceState);
                 AddPreferencesFromResource(Resource.Xml.preferences);
@@ -36,11 +36,10 @@ namespace MyTesla.Mobile
 
 
             public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key) {
-                var pref = FindPreference(key);
+                var pref = FindPreference(key) as ListPreference;
 
-                if (pref is ListPreference) {
-                    ListPreference listPref = (ListPreference)pref;
-                    listPref.Summary = listPref.Entry;
+                if (pref != null) {
+                    pref.Summary = pref.Entry;
                 }
             }
 
@@ -48,6 +47,17 @@ namespace MyTesla.Mobile
             public override void OnResume() {
                 base.OnResume();
                 PreferenceManager.SharedPreferences.RegisterOnSharedPreferenceChangeListener(this);
+
+                var pref = FindPreference("chargingLocation");
+
+                var location = this.activityContext.ChargingLocation;
+
+                if (location != null) {
+                    pref.Summary = $"{location.Latitude},{location.Longitude}";
+                }
+                else {
+                    pref.Summary = "Location not set";
+                }
             }
 
 
@@ -55,12 +65,6 @@ namespace MyTesla.Mobile
                 PreferenceManager.SharedPreferences.UnregisterOnSharedPreferenceChangeListener(this);
                 base.OnPause();
             }
-
-            //public override void OnCreatePreferences(Bundle savedInstanceState, string rootKey) {
-            //    AddPreferencesFromResource(Resource.Xml.preferences);
-
-            //    OnSharedPreferenceChanged(PreferenceManager.SharedPreferences, Constants.PrefKeys.VEHICLE_LOCATION);
-            //}
 
         }
 

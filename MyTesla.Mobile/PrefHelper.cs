@@ -38,6 +38,18 @@ namespace MyTesla.Mobile
         }
 
 
+        public double? GetPrefDouble(String key) {
+            var doubleString = _sharedPrefs == null ? null : _sharedPrefs.GetString(key, null);
+            double? result = null;
+
+            if (!String.IsNullOrEmpty(doubleString)) {
+                result = Double.Parse(doubleString);
+            }
+
+            return result;
+        }
+
+
         public bool GetPrefBoolean(String key) {
             return _sharedPrefs == null ? false : _sharedPrefs.GetBoolean(key, false);
         }
@@ -76,9 +88,22 @@ namespace MyTesla.Mobile
         }
 
 
+        public void SetPref(String key, double value) {
+            var editor = _sharedPrefs.Edit();
+            editor.PutString(key, value.ToString());
+            editor.Apply();
+        }
+
+
         public void SetPref(String key, bool value) {
             var editor = _sharedPrefs.Edit();
             editor.PutBoolean(key, value);
+            editor.Apply();
+        }
+
+        public void RemovePref(String key) {
+            var editor = _sharedPrefs.Edit();
+            editor.Remove(key);
             editor.Apply();
         }
     }

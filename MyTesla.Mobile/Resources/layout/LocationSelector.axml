@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:a="http://schemas.android.com/tools"
-                android:orientation="vertical"
-                android:gravity="top|center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-  --><!--<FrameLayout
-      android:id="@+id/content"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />--><!--
+  <fragment android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tag="map"
+            class="com.google.android.gms.maps.MapFragment" />
 
-  <TextView android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:textSize="25sp"
-            android:visibility="gone"
-            a:text="Set your charging location" />-->
+  <Button android:id="@+id/saveButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginLeft="7dp"
+      android:layout_marginRight="7dp"
+      android:text="Save" />
   
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/map"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              class="com.google.android.gms.maps.MapFragment" />  
-  
-<!--</LinearLayout>-->
+</RelativeLayout>

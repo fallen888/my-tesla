@@ -3425,8 +3425,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0041
 			public const int SYM = 2131558465;
 			
-			// aapt resource value: 0x7f0d00c9
-			public const int action0 = 2131558601;
+			// aapt resource value: 0x7f0d00ca
+			public const int action0 = 2131558602;
 			
 			// aapt resource value: 0x7f0d0085
 			public const int action_bar = 2131558533;
@@ -3449,17 +3449,17 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0063
 			public const int action_bar_title = 2131558499;
 			
-			// aapt resource value: 0x7f0d00c6
-			public const int action_container = 2131558598;
+			// aapt resource value: 0x7f0d00c7
+			public const int action_container = 2131558599;
 			
 			// aapt resource value: 0x7f0d0086
 			public const int action_context_bar = 2131558534;
 			
-			// aapt resource value: 0x7f0d00cd
-			public const int action_divider = 2131558605;
+			// aapt resource value: 0x7f0d00ce
+			public const int action_divider = 2131558606;
 			
-			// aapt resource value: 0x7f0d00c7
-			public const int action_image = 2131558599;
+			// aapt resource value: 0x7f0d00c8
+			public const int action_image = 2131558600;
 			
 			// aapt resource value: 0x7f0d00e0
 			public const int action_menu = 2131558624;
@@ -3479,11 +3479,11 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0065
 			public const int action_mode_close_button = 2131558501;
 			
-			// aapt resource value: 0x7f0d00c8
-			public const int action_text = 2131558600;
+			// aapt resource value: 0x7f0d00c9
+			public const int action_text = 2131558601;
 			
-			// aapt resource value: 0x7f0d00d6
-			public const int actions = 2131558614;
+			// aapt resource value: 0x7f0d00d7
+			public const int actions = 2131558615;
 			
 			// aapt resource value: 0x7f0d0066
 			public const int activity_chooser_view_content = 2131558502;
@@ -3524,8 +3524,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d006c
 			public const int buttonPanel = 2131558508;
 			
-			// aapt resource value: 0x7f0d00ca
-			public const int cancel_action = 2131558602;
+			// aapt resource value: 0x7f0d00cb
+			public const int cancel_action = 2131558603;
 			
 			// aapt resource value: 0x7f0d004e
 			public const int center = 2131558478;
@@ -3539,8 +3539,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d007c
 			public const int checkbox = 2131558524;
 			
-			// aapt resource value: 0x7f0d00d2
-			public const int chronometer = 2131558610;
+			// aapt resource value: 0x7f0d00d3
+			public const int chronometer = 2131558611;
 			
 			// aapt resource value: 0x7f0d0057
 			public const int clip_horizontal = 2131558487;
@@ -3553,9 +3553,6 @@ namespace MyTesla.Mobile
 			
 			// aapt resource value: 0x7f0d0096
 			public const int container = 2131558550;
-			
-			// aapt resource value: 0x7f0d00df
-			public const int content = 2131558623;
 			
 			// aapt resource value: 0x7f0d006f
 			public const int contentPanel = 2131558511;
@@ -3599,14 +3596,14 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0087
 			public const int edit_query = 2131558535;
 			
-			// aapt resource value: 0x7f0d00a9
-			public const int email = 2131558569;
+			// aapt resource value: 0x7f0d00aa
+			public const int email = 2131558570;
 			
 			// aapt resource value: 0x7f0d003a
 			public const int end = 2131558458;
 			
-			// aapt resource value: 0x7f0d00d8
-			public const int end_padder = 2131558616;
+			// aapt resource value: 0x7f0d00d9
+			public const int end_padder = 2131558617;
 			
 			// aapt resource value: 0x7f0d0049
 			public const int enterAlways = 2131558473;
@@ -3653,11 +3650,11 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d006b
 			public const int icon = 2131558507;
 			
-			// aapt resource value: 0x7f0d00d9
-			public const int icon_frame = 2131558617;
+			// aapt resource value: 0x7f0d00da
+			public const int icon_frame = 2131558618;
 			
-			// aapt resource value: 0x7f0d00d7
-			public const int icon_group = 2131558615;
+			// aapt resource value: 0x7f0d00d8
+			public const int icon_group = 2131558616;
 			
 			// aapt resource value: 0x7f0d0023
 			public const int icon_only = 2131558435;
@@ -3668,8 +3665,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0068
 			public const int image = 2131558504;
 			
-			// aapt resource value: 0x7f0d00d3
-			public const int info = 2131558611;
+			// aapt resource value: 0x7f0d00d4
+			public const int info = 2131558612;
 			
 			// aapt resource value: 0x7f0d0062
 			public const int italic = 2131558498;
@@ -3692,8 +3689,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0018
 			public const int line3 = 2131558424;
 			
-			// aapt resource value: 0x7f0d00da
-			public const int list = 2131558618;
+			// aapt resource value: 0x7f0d00db
+			public const int list = 2131558619;
 			
 			// aapt resource value: 0x7f0d0029
 			public const int listMode = 2131558441;
@@ -3701,11 +3698,11 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d006a
 			public const int list_item = 2131558506;
 			
-			// aapt resource value: 0x7f0d00ab
-			public const int loginButton = 2131558571;
+			// aapt resource value: 0x7f0d00ac
+			public const int loginButton = 2131558572;
 			
-			// aapt resource value: 0x7f0d00a8
-			public const int loginContainer = 2131558568;
+			// aapt resource value: 0x7f0d00a9
+			public const int loginContainer = 2131558569;
 			
 			// aapt resource value: 0x7f0d00a2
 			public const int map = 2131558562;
@@ -3713,11 +3710,11 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d00e2
 			public const int masked = 2131558626;
 			
-			// aapt resource value: 0x7f0d00cc
-			public const int media_actions = 2131558604;
+			// aapt resource value: 0x7f0d00cd
+			public const int media_actions = 2131558605;
 			
-			// aapt resource value: 0x7f0d00de
-			public const int message = 2131558622;
+			// aapt resource value: 0x7f0d00df
+			public const int message = 2131558623;
 			
 			// aapt resource value: 0x7f0d003b
 			public const int middle = 2131558459;
@@ -3725,80 +3722,80 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d005c
 			public const int mini = 2131558492;
 			
-			// aapt resource value: 0x7f0d00b8
-			public const int mr_art = 2131558584;
-			
-			// aapt resource value: 0x7f0d00ad
-			public const int mr_chooser_list = 2131558573;
-			
-			// aapt resource value: 0x7f0d00b0
-			public const int mr_chooser_route_desc = 2131558576;
+			// aapt resource value: 0x7f0d00b9
+			public const int mr_art = 2131558585;
 			
 			// aapt resource value: 0x7f0d00ae
-			public const int mr_chooser_route_icon = 2131558574;
-			
-			// aapt resource value: 0x7f0d00af
-			public const int mr_chooser_route_name = 2131558575;
-			
-			// aapt resource value: 0x7f0d00ac
-			public const int mr_chooser_title = 2131558572;
-			
-			// aapt resource value: 0x7f0d00b5
-			public const int mr_close = 2131558581;
-			
-			// aapt resource value: 0x7f0d00bb
-			public const int mr_control_divider = 2131558587;
-			
-			// aapt resource value: 0x7f0d00c1
-			public const int mr_control_playback_ctrl = 2131558593;
-			
-			// aapt resource value: 0x7f0d00c4
-			public const int mr_control_subtitle = 2131558596;
-			
-			// aapt resource value: 0x7f0d00c3
-			public const int mr_control_title = 2131558595;
-			
-			// aapt resource value: 0x7f0d00c2
-			public const int mr_control_title_container = 2131558594;
-			
-			// aapt resource value: 0x7f0d00b6
-			public const int mr_custom_control = 2131558582;
-			
-			// aapt resource value: 0x7f0d00b7
-			public const int mr_default_control = 2131558583;
-			
-			// aapt resource value: 0x7f0d00b2
-			public const int mr_dialog_area = 2131558578;
+			public const int mr_chooser_list = 2131558574;
 			
 			// aapt resource value: 0x7f0d00b1
-			public const int mr_expandable_area = 2131558577;
+			public const int mr_chooser_route_desc = 2131558577;
 			
-			// aapt resource value: 0x7f0d00c5
-			public const int mr_group_expand_collapse = 2131558597;
+			// aapt resource value: 0x7f0d00af
+			public const int mr_chooser_route_icon = 2131558575;
 			
-			// aapt resource value: 0x7f0d00b9
-			public const int mr_media_main_control = 2131558585;
+			// aapt resource value: 0x7f0d00b0
+			public const int mr_chooser_route_name = 2131558576;
 			
-			// aapt resource value: 0x7f0d00b4
-			public const int mr_name = 2131558580;
+			// aapt resource value: 0x7f0d00ad
+			public const int mr_chooser_title = 2131558573;
 			
-			// aapt resource value: 0x7f0d00ba
-			public const int mr_playback_control = 2131558586;
-			
-			// aapt resource value: 0x7f0d00b3
-			public const int mr_title_bar = 2131558579;
+			// aapt resource value: 0x7f0d00b6
+			public const int mr_close = 2131558582;
 			
 			// aapt resource value: 0x7f0d00bc
-			public const int mr_volume_control = 2131558588;
+			public const int mr_control_divider = 2131558588;
+			
+			// aapt resource value: 0x7f0d00c2
+			public const int mr_control_playback_ctrl = 2131558594;
+			
+			// aapt resource value: 0x7f0d00c5
+			public const int mr_control_subtitle = 2131558597;
+			
+			// aapt resource value: 0x7f0d00c4
+			public const int mr_control_title = 2131558596;
+			
+			// aapt resource value: 0x7f0d00c3
+			public const int mr_control_title_container = 2131558595;
+			
+			// aapt resource value: 0x7f0d00b7
+			public const int mr_custom_control = 2131558583;
+			
+			// aapt resource value: 0x7f0d00b8
+			public const int mr_default_control = 2131558584;
+			
+			// aapt resource value: 0x7f0d00b3
+			public const int mr_dialog_area = 2131558579;
+			
+			// aapt resource value: 0x7f0d00b2
+			public const int mr_expandable_area = 2131558578;
+			
+			// aapt resource value: 0x7f0d00c6
+			public const int mr_group_expand_collapse = 2131558598;
+			
+			// aapt resource value: 0x7f0d00ba
+			public const int mr_media_main_control = 2131558586;
+			
+			// aapt resource value: 0x7f0d00b5
+			public const int mr_name = 2131558581;
+			
+			// aapt resource value: 0x7f0d00bb
+			public const int mr_playback_control = 2131558587;
+			
+			// aapt resource value: 0x7f0d00b4
+			public const int mr_title_bar = 2131558580;
 			
 			// aapt resource value: 0x7f0d00bd
-			public const int mr_volume_group_list = 2131558589;
+			public const int mr_volume_control = 2131558589;
 			
-			// aapt resource value: 0x7f0d00bf
-			public const int mr_volume_item_icon = 2131558591;
+			// aapt resource value: 0x7f0d00be
+			public const int mr_volume_group_list = 2131558590;
 			
 			// aapt resource value: 0x7f0d00c0
-			public const int mr_volume_slider = 2131558592;
+			public const int mr_volume_item_icon = 2131558592;
+			
+			// aapt resource value: 0x7f0d00c1
+			public const int mr_volume_slider = 2131558593;
 			
 			// aapt resource value: 0x7f0d0031
 			public const int multiply = 2131558449;
@@ -3815,14 +3812,14 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d001e
 			public const int normal = 2131558430;
 			
-			// aapt resource value: 0x7f0d00d5
-			public const int notification_background = 2131558613;
+			// aapt resource value: 0x7f0d00d6
+			public const int notification_background = 2131558614;
+			
+			// aapt resource value: 0x7f0d00d0
+			public const int notification_main_column = 2131558608;
 			
 			// aapt resource value: 0x7f0d00cf
-			public const int notification_main_column = 2131558607;
-			
-			// aapt resource value: 0x7f0d00ce
-			public const int notification_main_column_container = 2131558606;
+			public const int notification_main_column_container = 2131558607;
 			
 			// aapt resource value: 0x7f0d0055
 			public const int parallax = 2131558485;
@@ -3833,8 +3830,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d000b
 			public const int parent_matrix = 2131558411;
 			
-			// aapt resource value: 0x7f0d00aa
-			public const int password = 2131558570;
+			// aapt resource value: 0x7f0d00ab
+			public const int password = 2131558571;
 			
 			// aapt resource value: 0x7f0d0056
 			public const int pin = 2131558486;
@@ -3845,8 +3842,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0007
 			public const int progress_horizontal = 2131558407;
 			
-			// aapt resource value: 0x7f0d00a4
-			public const int progress_overlay = 2131558564;
+			// aapt resource value: 0x7f0d00a5
+			public const int progress_overlay = 2131558565;
 			
 			// aapt resource value: 0x7f0d007e
 			public const int radio = 2131558526;
@@ -3854,17 +3851,20 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0053
 			public const int right = 2131558483;
 			
-			// aapt resource value: 0x7f0d00d4
-			public const int right_icon = 2131558612;
+			// aapt resource value: 0x7f0d00d5
+			public const int right_icon = 2131558613;
 			
-			// aapt resource value: 0x7f0d00d0
-			public const int right_side = 2131558608;
+			// aapt resource value: 0x7f0d00d1
+			public const int right_side = 2131558609;
 			
-			// aapt resource value: 0x7f0d00a6
-			public const int rootContainer = 2131558566;
+			// aapt resource value: 0x7f0d00a7
+			public const int rootContainer = 2131558567;
 			
 			// aapt resource value: 0x7f0d001f
 			public const int satellite = 2131558431;
+			
+			// aapt resource value: 0x7f0d00a3
+			public const int saveButton = 2131558563;
 			
 			// aapt resource value: 0x7f0d000c
 			public const int save_image_matrix = 2131558412;
@@ -3923,11 +3923,11 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0092
 			public const int search_voice_btn = 2131558546;
 			
-			// aapt resource value: 0x7f0d00db
-			public const int seekbar = 2131558619;
-			
 			// aapt resource value: 0x7f0d00dc
-			public const int seekbar_value = 2131558620;
+			public const int seekbar = 2131558620;
+			
+			// aapt resource value: 0x7f0d00dd
+			public const int seekbar_value = 2131558621;
 			
 			// aapt resource value: 0x7f0d0093
 			public const int select_dialog_listview = 2131558547;
@@ -3959,8 +3959,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d006d
 			public const int spacer = 2131558509;
 			
-			// aapt resource value: 0x7f0d00a5
-			public const int spinner = 2131558565;
+			// aapt resource value: 0x7f0d00a6
+			public const int spinner = 2131558566;
 			
 			// aapt resource value: 0x7f0d0008
 			public const int split_action_bar = 2131558408;
@@ -3980,8 +3980,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0054
 			public const int start = 2131558484;
 			
-			// aapt resource value: 0x7f0d00cb
-			public const int status_bar_latest_event_content = 2131558603;
+			// aapt resource value: 0x7f0d00cc
+			public const int status_bar_latest_event_content = 2131558604;
 			
 			// aapt resource value: 0x7f0d007f
 			public const int submenuarrow = 2131558527;
@@ -3989,8 +3989,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0090
 			public const int submit_area = 2131558544;
 			
-			// aapt resource value: 0x7f0d00dd
-			public const int switchWidget = 2131558621;
+			// aapt resource value: 0x7f0d00de
+			public const int switchWidget = 2131558622;
 			
 			// aapt resource value: 0x7f0d002a
 			public const int tabMode = 2131558442;
@@ -4019,8 +4019,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0015
 			public const int textinput_error = 2131558421;
 			
-			// aapt resource value: 0x7f0d00d1
-			public const int time = 2131558609;
+			// aapt resource value: 0x7f0d00d2
+			public const int time = 2131558610;
 			
 			// aapt resource value: 0x7f0d001b
 			public const int title = 2131558427;
@@ -4031,8 +4031,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0078
 			public const int title_template = 2131558520;
 			
-			// aapt resource value: 0x7f0d00a3
-			public const int toolbar = 2131558563;
+			// aapt resource value: 0x7f0d00a4
+			public const int toolbar = 2131558564;
 			
 			// aapt resource value: 0x7f0d0048
 			public const int top = 2131558472;
@@ -4073,8 +4073,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d00e1
 			public const int visible = 2131558625;
 			
-			// aapt resource value: 0x7f0d00be
-			public const int volume_item_container = 2131558590;
+			// aapt resource value: 0x7f0d00bf
+			public const int volume_item_container = 2131558591;
 			
 			// aapt resource value: 0x7f0d0025
 			public const int wide = 2131558437;
@@ -4085,8 +4085,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0038
 			public const int wrap_content = 2131558456;
 			
-			// aapt resource value: 0x7f0d00a7
-			public const int yourTeslas = 2131558567;
+			// aapt resource value: 0x7f0d00a8
+			public const int yourTeslas = 2131558568;
 			
 			static Id()
 			{
@@ -5992,13 +5992,10 @@ namespace MyTesla.Mobile
 		{
 			
 			// aapt resource value: 0x7f080000
-			public const int locationSelector = 2131230720;
+			public const int menu = 2131230720;
 			
 			// aapt resource value: 0x7f080001
-			public const int menu = 2131230721;
-			
-			// aapt resource value: 0x7f080002
-			public const int preferences = 2131230722;
+			public const int preferences = 2131230721;
 			
 			static Xml()
 			{

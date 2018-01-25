@@ -3,26 +3,25 @@ using Android.App;
 using Android.Content;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
+using Android.Locations;
 using Android.OS;
+using Android.Runtime;
+using Android.Widget;
 using static Android.Gms.Maps.GoogleMap;
 
 namespace MyTesla.Mobile
 {
-    //<activity android:name=".LocationSelectorActivity">
-    //  <intent-filter>
-    //    <action android:name="android.intent.action.VIEW" />
-    //    <category android:name="android.intent.category.DEFAULT" />
-    //  </intent-filter>
-    //</activity>
-
-    [Activity(Label = "MyTesla.Android Location Selector")]
-    [IntentFilter(new[] { "OPEN_LOCATION_SELECTOR" },
-                  Categories = new[] { Intent.CategoryDefault })]
-    public class LocationSelectorActivity : BaseActivity, IOnMapReadyCallback
+    [Activity(Label = "MyTesla.Android Location Selector", NoHistory = true)]
+    [IntentFilter(new[] { "OPEN_LOCATION_SELECTOR" }, Categories = new[] { Intent.CategoryDefault })]
+    public class LocationSelectorActivity : BaseActivity, IOnMapReadyCallback, ILocationListener
     {
         protected MapFragment _mapFragment = null;
         protected GoogleMap _map = null;
-        
+        protected LocationManager _locationManager = null;
+        protected Location _currentLocation = null;
+        protected Marker _marker = null;
+        protected Button _saveButton = null;
+
 
         protected override void OnCreate(Bundle savedInstanceState) {
             base.OnCreate(savedInstanceState);
@@ -37,36 +36,102 @@ namespace MyTesla.Mobile
                                                                     .InvokeCompassEnabled(true);
 
                 var fragTx = FragmentManager.BeginTransaction();
-
                 _mapFragment = MapFragment.NewInstance(mapOptions);
-
                 fragTx.Add(Resource.Id.map, _mapFragment, "map");
+                fragTx.AddToBackStack("LocationSelectorMap");
                 fragTx.Commit();
             }
 
             _mapFragment.GetMapAsync(this);
 
-            //if (_map != null) {
-            //    _map.UiSettings.ZoomControlsEnabled = true;
-            //    _map.UiSettings.CompassEnabled = true;
-            //}
+            _locationManager = GetSystemService(LocationService) as LocationManager;
 
-            //_mapFragment.tap
+            _saveButton = (Button)FindViewById(Resource.Id.saveButton);
+            _saveButton.BringToFront();
+
+            _saveButton.Click += delegate (object sender, EventArgs e) {
+                this.ChargingLocation = _marker.Position;
+                this.Finish();
+            };
+        }
+
+
+        protected override void OnPause() {
+            base.OnPause();
+            _locationManager.RemoveUpdates(this);
+        }
+
+
+        protected override void OnResume() {
+            base.OnResume();
+
+            Criteria locationCriteria = new Criteria();
+            locationCriteria.Accuracy = Accuracy.Coarse;
+            locationCriteria.PowerRequirement = Power.NoRequirement;
+
+            string locationProvider = _locationManager.GetBestProvider(locationCriteria, true);
+
+            if (!String.IsNullOrEmpty(locationProvider)) {
+                _locationManager.RequestLocationUpdates(locationProvider, 2000, 5, this);
+            }
         }
 
 
         public void OnMapReady(GoogleMap map) {
             _map = map;
 
-            _map.MapClick += delegate (object sender, MapClickEventArgs e) {
-                // Clear all markers.
-                _map.Clear();
+            _map.SetInfoWindowAdapter(new MarkerInfoWindowAdapter(this));
 
-                // Add marker at specified point.
-                var markerOptions = new MarkerOptions().SetPosition(e.Point)
-                                                       .SetTitle("Selected charging location");
-                _map.AddMarker(markerOptions);
+            _map.MapClick += delegate (object sender, MapClickEventArgs e) {
+                SetMarker(e.Point.Latitude, e.Point.Longitude);
             };
+
+            _map.CameraMoveCanceled += delegate (object sender, EventArgs e) {
+                if (_marker != null) {
+                    _marker.ShowInfoWindow();
+                }
+            };
+        }
+
+
+        public void OnLocationChanged(Location location) {
+            if (_currentLocation == null) {
+                SetMarker(location.Latitude, location.Longitude);
+                _map.AnimateCamera(CameraUpdateFactory.NewLatLngZoom(new LatLng(location.Latitude, location.Longitude), 16));
+                _currentLocation = location;
+            }
+        }
+
+
+        public void OnProviderDisabled(string provider) {
+            //throw new NotImplementedException();
+        }
+
+        public void OnProviderEnabled(string provider) {
+            //throw new NotImplementedException();
+        }
+
+        public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras) {
+            //throw new NotImplementedException();
+        }
+
+
+        protected void SetMarker(double latitude, double longitude) {
+            // Clear all markers.
+            _map.Clear();
+
+            // Add marker at specified point.
+            var position = new LatLng(latitude, longitude);
+            var markerOptions = new MarkerOptions().SetPosition(position)
+                                                   .SetTitle("Charging Location")
+                                                   .SetSnippet("This is the charging location currently set.\nTap anywhere else on the map\nto set as new location.");
+
+            _marker = _map.AddMarker(markerOptions);
+
+            if (_currentLocation != null) {
+                _marker.ShowInfoWindow();
+            }
+
         }
     }
 }
