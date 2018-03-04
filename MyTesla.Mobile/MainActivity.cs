@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Android.App;
@@ -8,7 +9,7 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-
+using MyTesla.Core.Models;
 using V7 = Android.Support.V7.Widget;
 
 
@@ -49,6 +50,23 @@ namespace MyTesla.Mobile
             RegisterEventHandlers();
             InitApp();
         }
+
+
+        protected override bool HandleOptionsItemSelected(IMenuItem item)
+        {
+            var isHandled = false;
+
+            switch (item.ItemId)
+            {
+                case Resource.Id.action_menu_refresh_status:
+                    isHandled = true;
+                    CheckVehicles(true);
+                    break;
+            }
+
+            return isHandled ? true : base.HandleOptionsItemSelected(item);
+        }
+
 
         protected void InitControls() {
             // Register.
@@ -138,13 +156,13 @@ namespace MyTesla.Mobile
         }
 
 
-        protected async Task<bool> CheckVehicles() {
+        protected async Task<bool> CheckVehicles(bool forceRefresh = false) {
             var vehicleIds = _prefHelper.GetPrefStrings(Constants.PrefKeys.VEHICLES);
 
             if (vehicleIds.Count > 0) {
                 var lastVehicleCheck = _prefHelper.GetPrefDateTime(Constants.PrefKeys.LAST_VEHICLE_CHECK);
 
-                if (lastVehicleCheck < DateTime.Now.AddDays(-1)) {
+                if (lastVehicleCheck < DateTime.Now.AddDays(-1) || forceRefresh) {
                     // Last check was more than a day ago, so clear the list to force a new API GET.
                     vehicleIds.Clear();
                 }
@@ -189,6 +207,18 @@ namespace MyTesla.Mobile
             //vehicleIds.Add(vehicleIds[0]);
 
             RunOnUiThread(() => {
+                // Remove previously-rendered vehicle views.
+                for (int i = _rootContainer.ChildCount - 1; i >= 0; i--)
+                {
+                    var childView = _rootContainer.GetChildAt(i);
+
+                    if (childView.Tag != null && childView.Tag.ToString() == "vehicleView")
+                    {
+                        _rootContainer.RemoveViewAt(i);
+                    }
+                }
+
+                // Set activity header.
                 _yourTeslas.Text = (vehicleIds.Count == 0) ? "No vehicles found." : "Your Tesla" + (vehicleIds.Count > 1 ? "s" : String.Empty);
                 _yourTeslas.Visibility = ViewStates.Visible;
             });
@@ -201,6 +231,7 @@ namespace MyTesla.Mobile
 
                 // Create new container.
                 var vehicleContainer = new LinearLayout(this);
+                vehicleContainer.Tag = "vehicleView";
                 vehicleContainer.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
                 vehicleContainer.Orientation = Orientation.Vertical;
                 vehicleContainer.SetForegroundGravity(GravityFlags.CenterHorizontal);
@@ -256,9 +287,20 @@ namespace MyTesla.Mobile
                     // Get current charge state.
                     var chargeState = await _teslaAPI.GetChargeState(Convert.ToInt64(id));
 
+                    var chargeStatus = "Status: ";
+
+                    if (String.IsNullOrEmpty(chargeState.charging_state))
+                    {
+                        chargeStatus += "Unknown";
+                    }
+                    else
+                    {
+                        chargeStatus += $"{chargeState.charging_state}{System.Environment.NewLine}{chargeState.battery_level}% charged with a range of {chargeState.battery_range} miles.";
+                    }
+
                     var chargeStateLabel = new TextView(this)
                     {
-                        Text = $"Status: {chargeState.charging_state}{System.Environment.NewLine}{chargeState.battery_level}% charged with a range of {chargeState.battery_range} miles.",
+                        Text = chargeStatus,
                         Gravity = GravityFlags.CenterHorizontal,
                         TextSize = 16
                     };

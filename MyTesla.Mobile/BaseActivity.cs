@@ -24,6 +24,7 @@ namespace MyTesla.Mobile
         protected View _view = null;
         protected ViewStates _toVisibility = ViewStates.Gone;
 
+
         protected string AccessToken
         {
             get
@@ -106,8 +107,15 @@ namespace MyTesla.Mobile
         public override bool OnOptionsItemSelected(IMenuItem item) {
             //return base.OnOptionsItemSelected(item);
 
-            switch (item.ItemId) {
-                case Resource.Id.action_menu:
+            return HandleOptionsItemSelected(item);
+        }
+
+
+        protected virtual bool HandleOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.action_menu_settings:
                     StartActivity(new Intent(this, typeof(SettingsActivity)));
                     break;
             }

@@ -3461,14 +3461,17 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d00c8
 			public const int action_image = 2131558600;
 			
-			// aapt resource value: 0x7f0d00e0
-			public const int action_menu = 2131558624;
-			
 			// aapt resource value: 0x7f0d0003
 			public const int action_menu_divider = 2131558403;
 			
 			// aapt resource value: 0x7f0d0004
 			public const int action_menu_presenter = 2131558404;
+			
+			// aapt resource value: 0x7f0d00e0
+			public const int action_menu_refresh_status = 2131558624;
+			
+			// aapt resource value: 0x7f0d00e1
+			public const int action_menu_settings = 2131558625;
 			
 			// aapt resource value: 0x7f0d0082
 			public const int action_mode_bar = 2131558530;
@@ -3707,8 +3710,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d00a2
 			public const int map = 2131558562;
 			
-			// aapt resource value: 0x7f0d00e2
-			public const int masked = 2131558626;
+			// aapt resource value: 0x7f0d00e3
+			public const int masked = 2131558627;
 			
 			// aapt resource value: 0x7f0d00cd
 			public const int media_actions = 2131558605;
@@ -4070,8 +4073,8 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0d0016
 			public const int view_offset_helper = 2131558422;
 			
-			// aapt resource value: 0x7f0d00e1
-			public const int visible = 2131558625;
+			// aapt resource value: 0x7f0d00e2
+			public const int visible = 2131558626;
 			
 			// aapt resource value: 0x7f0d00bf
 			public const int volume_item_container = 2131558591;

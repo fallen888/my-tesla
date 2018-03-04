@@ -59,10 +59,14 @@ namespace MyTesla.Mobile
         {
             List<Vehicle> vehicles = null;
 
-            using (var vehiclesResponse = await _client.GetAsync("api/1/vehicles"))
+            using (var response = await _client.GetAsync("api/1/vehicles"))
             {
-                var vehiclesJson = vehiclesResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
-                vehicles = JsonConvert.DeserializeObject<TeslaResponse<List<Vehicle>>>(vehiclesJson).Content;
+                var responseString = response.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    vehicles = JsonConvert.DeserializeObject<TeslaResponse<List<Vehicle>>>(responseString).Content;
+                }
             }
 
             return vehicles ?? new List<Vehicle>();
@@ -75,8 +79,12 @@ namespace MyTesla.Mobile
 
             using (var response = await _client.GetAsync($"api/1/vehicles/{vehicleId}/data_request/charge_state"))
             {
-                var chargeStateJson = response.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
-                chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(chargeStateJson).Content;
+                var responseString = response.Content.ReadAsStringAsync().Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(responseString).Content;
+                }
             }
 
             return chargeState;
