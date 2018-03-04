@@ -4,5 +4,7 @@
 
 /.vs/MyTesla
 /packages
-/MyTesla.Mobile/bin/Debug
+/MyTesla.Mobile/bin
 /MyTesla.Mobile/obj
+/MyTesla.Core/bin
+/MyTesla.Core/obj
