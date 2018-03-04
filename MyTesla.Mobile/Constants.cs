@@ -34,6 +34,10 @@ namespace MyTesla.Mobile
             public static string LAST_VEHICLE_CHECK = "LAST_VEHICLE_CHECK";
             public static string VEHICLE_LOCATION_LAT = "VEHICLE_LOCATION_LAT";
             public static string VEHICLE_LOCATION_LONG = "VEHICLE_LOCATION_LONG";
+
+            public static string SETTING_REMINDER_NOTIFICATIONS_ENABLED = "reminderNotificationsEnabled";
+            public static string SETTING_CHARGING_LOCATION = "chargingLocation";
+            public static string SETTING_DISTANCE_FROM_CHARGING_LOCATION = "distanceFromChargingLocation";
         }
     }
 }

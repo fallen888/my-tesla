@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Net;
+using System.Threading.Tasks;
 
 using Android.App;
-using Android.Widget;
+using Android.Content;
+using Android.Content.PM;
+using Android.Graphics;
 using Android.OS;
 using Android.Views;
+using Android.Widget;
+
 using V7 = Android.Support.V7.Widget;
-using Android.Graphics;
-using Android.Util;
-using Android.Content.PM;
-using System.Threading.Tasks;
+
 
 namespace MyTesla.Mobile
 {
@@ -91,6 +92,48 @@ namespace MyTesla.Mobile
             else {
                 // Got valid access token.
                 await CheckVehicles();
+                CheckNotificationSettings();
+            }
+        }
+
+
+        protected void CheckNotificationSettings()
+        {
+            var isNotificationsEnabled =_prefHelper.GetPrefBoolean(Constants.PrefKeys.SETTING_REMINDER_NOTIFICATIONS_ENABLED);
+            var isPromptNeeded = !isNotificationsEnabled || this.ChargingLocation == null;
+
+            if (isPromptNeeded)
+            {
+                var alert = new AlertDialog.Builder(this);
+
+                if (!isNotificationsEnabled)
+                {
+                    alert.SetTitle("Notifications Disabled");
+                    alert.SetMessage("Notifications are currently disabled. Would you like to enable them and configure other settings now?");
+                }
+                else if (this.ChargingLocation == null)
+                {
+                    alert.SetTitle("Charging Location Not Set");
+                    alert.SetMessage("Charging location has not been set. Would you like to set it and configure other settings now?");
+                }
+
+                alert.SetPositiveButton("Yes", (senderAlert, args) =>
+                {
+                    StartActivity(new Intent(this, typeof(SettingsActivity)));
+                });
+
+                alert.SetNegativeButton("No", (senderAlert, args) =>
+                {
+                    //Toast.MakeText(this, "Cancelled!", ToastLength.Short).Show();
+                });
+
+                using (var dialog = alert.Create())
+                {
+                    RunOnUiThread(() =>
+                    {
+                        dialog.Show();
+                    });
+                }
             }
         }
 
@@ -118,6 +161,7 @@ namespace MyTesla.Mobile
                     vehicles.ForEach((vehicle) => {
                         var id = vehicle.id.ToString();
                         _prefHelper.SetPref(String.Format(Constants.PrefKeys.VEHICLE_VIN, id), vehicle.vin);
+                        _prefHelper.SetPref(String.Format(Constants.PrefKeys.VEHICLE_NAME, id), vehicle.display_name);
                         _prefHelper.SetPref(String.Format(Constants.PrefKeys.VEHICLE_OPTION_CODES, id), vehicle.option_codes);
                         vehicleIds.Add(id);
                     });
@@ -142,6 +186,8 @@ namespace MyTesla.Mobile
 
             var vehicleIds = _prefHelper.GetPrefStrings(Constants.PrefKeys.VEHICLES);
 
+            //vehicleIds.Add(vehicleIds[0]);
+
             RunOnUiThread(() => {
                 _yourTeslas.Text = (vehicleIds.Count == 0) ? "No vehicles found." : "Your Tesla" + (vehicleIds.Count > 1 ? "s" : String.Empty);
                 _yourTeslas.Visibility = ViewStates.Visible;
@@ -154,42 +200,78 @@ namespace MyTesla.Mobile
                 var optionCodes = _prefHelper.GetPrefString(String.Format(Constants.PrefKeys.VEHICLE_OPTION_CODES, id));
 
                 // Create new container.
-                var vehicleContainer = new RelativeLayout(this);
-                vehicleContainer.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+                var vehicleContainer = new LinearLayout(this);
+                vehicleContainer.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+                vehicleContainer.Orientation = Orientation.Vertical;
                 vehicleContainer.SetForegroundGravity(GravityFlags.CenterHorizontal);
+                vehicleContainer.SetPadding(0, 0, 0, 150);
 
                 // Load image.
-                var imageBitmap = GetImageBitmapFromUrl($"https://www.tesla.com/configurator/compositor/?model=m{model}&view=STUD_SIDE&size=1000&options={optionCodes}&bkba_opt=1");
                 var image = new ImageView(this);
-                image.Id = View.GenerateViewId();
-                image.SetImageBitmap(imageBitmap);
+
+                using (var imageBitmap = GetImageBitmapFromUrl($"https://www.tesla.com/configurator/compositor/?model=m{model}&view=STUD_SIDE&size=1000&options={optionCodes}&bkba_opt=1"))
+                using (var croppedBitmap = Bitmap.CreateBitmap(imageBitmap, 0, (int)(imageBitmap.Height * 0.18), imageBitmap.Width, (int)(imageBitmap.Height * 0.55)))
+                {
+                    image.SetImageBitmap(croppedBitmap);
+                }
+
+                //image.SetBackgroundColor(Color.LightPink);
                 image.SetForegroundGravity(GravityFlags.CenterHorizontal);
-                image.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
-
-                // Center image.
-                var imageLayoutParams = (RelativeLayout.LayoutParams)image.LayoutParameters;
-                imageLayoutParams.AddRule(LayoutRules.CenterHorizontal);
-                image.LayoutParameters = imageLayoutParams;
-
-                vehicleContainer.AddView(image);
+                image.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent)
+                {
+                    Gravity = GravityFlags.CenterHorizontal
+                };
 
                 // Show name.
                 var nameLabel = new TextView(this);
                 nameLabel.Text = name;
                 nameLabel.Gravity = GravityFlags.CenterHorizontal;
-                nameLabel.TextSize = 25;
-                nameLabel.LayoutParameters = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+                nameLabel.TextSize = 23;
+                nameLabel.SetTextColor(Color.Black);
+                nameLabel.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent)
+                {
+                    Gravity = GravityFlags.CenterHorizontal
+                };
 
-                var labelLayoutParams = (RelativeLayout.LayoutParams)nameLabel.LayoutParameters;
-                labelLayoutParams.AddRule(LayoutRules.AlignBottom, image.Id);
-                labelLayoutParams.BottomMargin = 55;
-                nameLabel.LayoutParameters = labelLayoutParams;
+                // Show status spinner until charge state is retrieved.
+                var statusSpinner = new ProgressBar(this, null, 0, Resource.Style.Widget_AppCompat_ProgressBar);
+                statusSpinner.SetForegroundGravity(GravityFlags.Center);
+                statusSpinner.Indeterminate = true;
+                statusSpinner.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent)
+                {
+                    Gravity = GravityFlags.CenterHorizontal,
+                    Height = 50,
+                    Width = 50
+                };
 
                 vehicleContainer.AddView(nameLabel);
+                vehicleContainer.AddView(image);
+                vehicleContainer.AddView(statusSpinner);
 
                 RunOnUiThread(() => {
                     _rootContainer.AddView(vehicleContainer);
                 });
+
+                Task.Run(async () => {
+                    // Get current charge state.
+                    var chargeState = await _teslaAPI.GetChargeState(Convert.ToInt64(id));
+
+                    var chargeStateLabel = new TextView(this)
+                    {
+                        Text = $"Status: {chargeState.charging_state}{System.Environment.NewLine}{chargeState.battery_level}% charged with a range of {chargeState.battery_range} miles.",
+                        Gravity = GravityFlags.CenterHorizontal,
+                        TextSize = 16
+                    };
+
+                    chargeStateLabel.SetTextColor(Color.DarkGray);
+                    chargeStateLabel.LayoutParameters = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.WrapContent);
+
+                    RunOnUiThread(() => {
+                        statusSpinner.Visibility = ViewStates.Gone;
+                        vehicleContainer.AddView(chargeStateLabel);
+                    });
+                });
+
             });
 
             ShowSpinner(false);
@@ -229,6 +311,7 @@ namespace MyTesla.Mobile
                 ShowSpinner(false);
 
                 await CheckVehicles();
+                CheckNotificationSettings();
             }
             else {
                 ShowSpinner(false);

@@ -34,7 +34,6 @@
       android:visibility="visible">
 
       <ProgressBar android:id="@+id/spinner"
-                   style="@android:style/Widget.ProgressBar.Large"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:foregroundGravity="center"
@@ -58,7 +57,8 @@
         <TextView android:id="@+id/yourTeslas"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginTop="10dp" 
+                  android:layout_marginTop="10dp"
+                  android:layout_marginBottom="25dp"
                   android:gravity="center_horizontal"
                   android:textSize="25sp"
                   android:visibility="gone" />
@@ -67,7 +67,7 @@
                       android:orientation="vertical"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:visibility="invisible"
+                      android:visibility="gone"
                       android:focusableInTouchMode="true">
 
           <EditText android:id="@+id/email"
@@ -87,13 +87,6 @@
               android:layout_height="wrap_content"
               android:text="Sign In" />
         </LinearLayout>
-
-        <!--<ProgressBar android:id="@+id/spinner"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          style="@android:style/Widget.ProgressBar.Large"
-          android:layout_marginRight="5dp"
-          android:visibility="gone"/>-->
 
       </LinearLayout>
 

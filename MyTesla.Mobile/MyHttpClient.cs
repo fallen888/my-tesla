@@ -55,15 +55,31 @@ namespace MyTesla.Mobile
         }
 
 
-        public async Task<List<Vehicle>> GetVehicles() {
+        public async Task<List<Vehicle>> GetVehicles()
+        {
             List<Vehicle> vehicles = null;
 
-            using (var vehiclesResponse = await _client.GetAsync("api/1/vehicles")) {
+            using (var vehiclesResponse = await _client.GetAsync("api/1/vehicles"))
+            {
                 var vehiclesJson = vehiclesResponse.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
                 vehicles = JsonConvert.DeserializeObject<TeslaResponse<List<Vehicle>>>(vehiclesJson).Content;
             }
 
             return vehicles ?? new List<Vehicle>();
+        }
+
+
+        public async Task<ChargeState> GetChargeState(long vehicleId)
+        {
+            ChargeState chargeState = null;
+
+            using (var response = await _client.GetAsync($"api/1/vehicles/{vehicleId}/data_request/charge_state"))
+            {
+                var chargeStateJson = response.EnsureSuccessStatusCode().Content.ReadAsStringAsync().Result;
+                chargeState = JsonConvert.DeserializeObject<TeslaResponse<ChargeState>>(chargeStateJson).Content;
+            }
+
+            return chargeState;
         }
 
 

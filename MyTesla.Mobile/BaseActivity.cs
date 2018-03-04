@@ -79,6 +79,17 @@ namespace MyTesla.Mobile
         }
 
 
+        protected int DistanceFromChargingLocation
+        {
+            get
+            {
+                var distanceString = _prefHelper.GetPrefString(Constants.PrefKeys.SETTING_DISTANCE_FROM_CHARGING_LOCATION);
+                var distance = Convert.ToInt32(distanceString);
+                return distance;
+            }
+        }
+
+
         protected override void OnCreate(Bundle savedInstanceState) {
             base.OnCreate(savedInstanceState);
 

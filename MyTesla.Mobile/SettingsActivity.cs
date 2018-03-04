@@ -48,16 +48,19 @@ namespace MyTesla.Mobile
                 base.OnResume();
                 PreferenceManager.SharedPreferences.RegisterOnSharedPreferenceChangeListener(this);
 
-                var pref = FindPreference("chargingLocation");
+                var locationPref = FindPreference(Constants.PrefKeys.SETTING_CHARGING_LOCATION);
+                var distancePref = FindPreference(Constants.PrefKeys.SETTING_DISTANCE_FROM_CHARGING_LOCATION);
 
                 var location = this.activityContext.ChargingLocation;
 
                 if (location != null) {
-                    pref.Summary = $"{location.Latitude},{location.Longitude}";
+                    locationPref.Summary = $"{location.Latitude},{location.Longitude}";
                 }
                 else {
-                    pref.Summary = "Location not set";
+                    locationPref.Summary = "Location not set";
                 }
+
+                distancePref.Summary = $"{this.activityContext.DistanceFromChargingLocation} meters";
             }
 
 

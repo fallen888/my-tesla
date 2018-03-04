@@ -26,7 +26,8 @@
 
   <EditTextPreference
         android:key="distanceFromChargingLocation"
-        android:title="Distance from location to consider" />
+        android:title="Distance from location to consider (in meters)"
+        android:defaultValue="50" />
 
   <!--<PreferenceScreen
           android:key="second_preferencescreen"
