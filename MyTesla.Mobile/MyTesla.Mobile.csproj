@@ -154,6 +154,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LocationSelectorActivity.cs" />
     <Compile Include="SettingsActivity.cs" />
+    <Compile Include="TimePreference.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />

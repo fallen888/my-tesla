@@ -18,7 +18,6 @@ namespace MyTesla.Mobile
         protected MapFragment _mapFragment = null;
         protected GoogleMap _map = null;
         protected LocationManager _locationManager = null;
-        protected Location _currentLocation = null;
         protected Marker _marker = null;
         protected Button _saveButton = null;
 
@@ -91,15 +90,26 @@ namespace MyTesla.Mobile
                     _marker.ShowInfoWindow();
                 }
             };
+
+            if (this.ChargingLocation != null)
+            {
+                FlyToLocation(this.ChargingLocation);
+            }
         }
 
 
         public void OnLocationChanged(Location location) {
-            if (_currentLocation == null) {
-                SetMarker(location.Latitude, location.Longitude);
-                _map.AnimateCamera(CameraUpdateFactory.NewLatLngZoom(new LatLng(location.Latitude, location.Longitude), 16));
-                _currentLocation = location;
+            if (this.ChargingLocation == null) {
+                this.ChargingLocation = new LatLng(location.Latitude, location.Longitude);
+                FlyToLocation(this.ChargingLocation);
             }
+        }
+
+
+        protected void FlyToLocation(LatLng location)
+        {
+            SetMarker(location.Latitude, location.Longitude);
+            _map.AnimateCamera(CameraUpdateFactory.NewLatLngZoom(location, 16));
         }
 
 
@@ -128,7 +138,7 @@ namespace MyTesla.Mobile
 
             _marker = _map.AddMarker(markerOptions);
 
-            if (_currentLocation != null) {
+            if (this.ChargingLocation != null) {
                 _marker.ShowInfoWindow();
             }
 

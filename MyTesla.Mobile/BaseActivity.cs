@@ -91,12 +91,44 @@ namespace MyTesla.Mobile
         }
 
 
+        protected int CheckFrequency
+        {
+            get
+            {
+                var frequencyString = _prefHelper.GetPrefString(Constants.PrefKeys.SETTING_CHECK_FREQUENCY);
+                var frequency = Convert.ToInt32(frequencyString);
+                return frequency;
+            }
+        }
+
+
+        protected string StartTime
+        {
+            get
+            {
+                var startTime = _prefHelper.GetPrefString(Constants.PrefKeys.SETTING_START_TIME);
+                return startTime;
+            }
+        }
+
+
+        protected string EndTime
+        {
+            get
+            {
+                var endTime = _prefHelper.GetPrefString(Constants.PrefKeys.SETTING_END_TIME);
+                return endTime;
+            }
+        }
+
+
         protected override void OnCreate(Bundle savedInstanceState) {
             base.OnCreate(savedInstanceState);
 
             this._prefHelper = new PrefHelper(this.ApplicationContext);
             this._teslaAPI = new TeslaAPI(this.AccessToken);
         }
+
 
         public override bool OnCreateOptionsMenu(IMenu menu) {
             MenuInflater.Inflate(Resource.Xml.menu, menu);

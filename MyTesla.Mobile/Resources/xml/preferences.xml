@@ -29,6 +29,22 @@
         android:title="Distance from location to consider (in meters)"
         android:defaultValue="50" />
 
+  <EditTextPreference
+        android:key="checkFrequency"
+        android:title="Check every N hours"
+        android:defaultValue="2" />
+
+
+  <MyTesla.Mobile.TimePreference
+       android:key="startTime"
+       android:title="Daily Monitoring Start Time" />
+
+
+  <MyTesla.Mobile.TimePreference
+       android:key="endTime"
+       android:title="Daily Monitoring End Time" />
+  
+  
   <!--<PreferenceScreen
           android:key="second_preferencescreen"
           android:title="WiFi settings">

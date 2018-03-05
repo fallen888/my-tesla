@@ -15,7 +15,6 @@ namespace MyTesla.Mobile
             base.OnCreate(savedInstanceState);
 
             FragmentManager.BeginTransaction().Replace(Android.Resource.Id.Content, new MyPreferenceFragment(this))
-                                              .AddToBackStack(null)
                                               .Commit();
         }
 
@@ -36,10 +35,19 @@ namespace MyTesla.Mobile
 
 
             public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key) {
-                var pref = FindPreference(key) as ListPreference;
+                var pref = FindPreference(key);
 
-                if (pref != null) {
-                    pref.Summary = pref.Entry;
+                if (pref is ListPreference) {
+                    pref.Summary = (pref as ListPreference).Entry;
+                }
+
+                if (key == Constants.PrefKeys.SETTING_START_TIME)
+                {
+                    pref.Summary = $"Monitoring starts at {this.activityContext.StartTime}";
+                }
+                else if (key == Constants.PrefKeys.SETTING_END_TIME)
+                {
+                    pref.Summary = $"Monitoring ends at {this.activityContext.EndTime}";
                 }
             }
 
@@ -50,6 +58,9 @@ namespace MyTesla.Mobile
 
                 var locationPref = FindPreference(Constants.PrefKeys.SETTING_CHARGING_LOCATION);
                 var distancePref = FindPreference(Constants.PrefKeys.SETTING_DISTANCE_FROM_CHARGING_LOCATION);
+                var frequencyPref = FindPreference(Constants.PrefKeys.SETTING_CHECK_FREQUENCY);
+                var startTimePref = FindPreference(Constants.PrefKeys.SETTING_START_TIME);
+                var endTimePref = FindPreference(Constants.PrefKeys.SETTING_END_TIME);
 
                 var location = this.activityContext.ChargingLocation;
 
@@ -61,6 +72,9 @@ namespace MyTesla.Mobile
                 }
 
                 distancePref.Summary = $"{this.activityContext.DistanceFromChargingLocation} meters";
+                frequencyPref.Summary = $"Check every {this.activityContext.CheckFrequency} hours";
+                startTimePref.Summary = $"Monitoring starts at {this.activityContext.StartTime}";
+                endTimePref.Summary = $"Monitoring ends at {this.activityContext.EndTime}";
             }
 
 

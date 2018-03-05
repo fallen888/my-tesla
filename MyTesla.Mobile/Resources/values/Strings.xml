@@ -4,4 +4,6 @@
   <string name="app_name">MyTesla Charging Reminder</string>
   <string name="notification_title">Time to Charge Up</string>
   <string name="notification_content">Time to plug in and charge!</string>
+  <string name="time_preference_set">Set</string>
+  <string name="time_preference_cancel">Cancel</string>
 </resources>

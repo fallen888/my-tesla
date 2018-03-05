@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 
 namespace MyTesla.Mobile
 {
@@ -38,6 +29,9 @@ namespace MyTesla.Mobile
             public static string SETTING_REMINDER_NOTIFICATIONS_ENABLED = "reminderNotificationsEnabled";
             public static string SETTING_CHARGING_LOCATION = "chargingLocation";
             public static string SETTING_DISTANCE_FROM_CHARGING_LOCATION = "distanceFromChargingLocation";
+            public static string SETTING_CHECK_FREQUENCY = "checkFrequency";
+            public static string SETTING_START_TIME = "startTime";
+            public static string SETTING_END_TIME = "endTime";
         }
     }
 }
