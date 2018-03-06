@@ -4666,12 +4666,6 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0a0027
 			public const int mr_user_route_category_name = 2131361831;
 			
-			// aapt resource value: 0x7f0a0054
-			public const int notification_content = 2131361876;
-			
-			// aapt resource value: 0x7f0a0053
-			public const int notification_title = 2131361875;
-			
 			// aapt resource value: 0x7f0a004c
 			public const int password_toggle_content_description = 2131361868;
 			
@@ -4693,11 +4687,11 @@ namespace MyTesla.Mobile
 			// aapt resource value: 0x7f0a003c
 			public const int status_bar_notification_info_overflow = 2131361852;
 			
-			// aapt resource value: 0x7f0a0056
-			public const int time_preference_cancel = 2131361878;
+			// aapt resource value: 0x7f0a0054
+			public const int time_preference_cancel = 2131361876;
 			
-			// aapt resource value: 0x7f0a0055
-			public const int time_preference_set = 2131361877;
+			// aapt resource value: 0x7f0a0053
+			public const int time_preference_set = 2131361875;
 			
 			// aapt resource value: 0x7f0a0011
 			public const int v7_preference_off = 2131361809;

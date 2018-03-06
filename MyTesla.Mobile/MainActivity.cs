@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 using Android.App;
@@ -37,14 +38,6 @@ namespace MyTesla.Mobile
                 var myToolbar = (V7.Toolbar)FindViewById(Resource.Id.toolbar);
                 SetSupportActionBar(myToolbar);
             });
-
-            /*
-            Intent serviceIntent = new Intent(this, typeof(ChargeCheckService));
-            var component = StartService(serviceIntent);
-
-            if (component == null) {
-            }
-            */
 
             InitControls();
             RegisterEventHandlers();
@@ -117,33 +110,22 @@ namespace MyTesla.Mobile
 
         protected void CheckNotificationSettings()
         {
+            var reminderCount = _prefHelper.GetPrefInt(Constants.PrefKeys.SETTINGS_CONFIGURATION_REMINDER);
             var isNotificationsEnabled =_prefHelper.GetPrefBoolean(Constants.PrefKeys.SETTING_REMINDER_NOTIFICATIONS_ENABLED);
-            var isPromptNeeded = !isNotificationsEnabled || this.ChargingLocation == null;
 
-            if (isPromptNeeded)
+            if (!isNotificationsEnabled && reminderCount == 0)
             {
                 var alert = new AlertDialog.Builder(this);
 
-                if (!isNotificationsEnabled)
-                {
-                    alert.SetTitle("Notifications Disabled");
-                    alert.SetMessage("Notifications are currently disabled. Would you like to enable them and configure other settings now?");
-                }
-                else if (this.ChargingLocation == null)
-                {
-                    alert.SetTitle("Charging Location Not Set");
-                    alert.SetMessage("Charging location has not been set. Would you like to set it and configure other settings now?");
-                }
+                alert.SetTitle("Notifications Disabled");
+                alert.SetMessage("Notifications are currently disabled. Would you like to enable them and configure other settings now?");
 
                 alert.SetPositiveButton("Yes", (senderAlert, args) =>
                 {
                     StartActivity(new Intent(this, typeof(SettingsActivity)));
                 });
 
-                alert.SetNegativeButton("No", (senderAlert, args) =>
-                {
-                    //Toast.MakeText(this, "Cancelled!", ToastLength.Short).Show();
-                });
+                alert.SetNegativeButton("No", (senderAlert, args) => {});
 
                 using (var dialog = alert.Create())
                 {
@@ -152,6 +134,8 @@ namespace MyTesla.Mobile
                         dialog.Show();
                     });
                 }
+
+                _prefHelper.SetPref(Constants.PrefKeys.SETTINGS_CONFIGURATION_REMINDER, ++reminderCount);
             }
         }
 

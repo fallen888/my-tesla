@@ -23,7 +23,9 @@ namespace MyTesla.Mobile
     {
         HttpClient _client = null;
 
-        public TeslaAPI(string accessToken) {
+
+        public TeslaAPI(string accessToken)
+        {
             _client = new HttpClient { BaseAddress = Constants.TESLA_API_BASEADDRESS };
 
             // Set access token in auth header.
@@ -88,6 +90,24 @@ namespace MyTesla.Mobile
             }
 
             return chargeState;
+        }
+        
+
+        public async Task<DriveState> GetDriveState(long vehicleId)
+        {
+            DriveState driveState = null;
+
+            using (var response = await _client.GetAsync($"api/1/vehicles/{vehicleId}/data_request/drive_state"))
+            {
+                var responseString = response.Content.ReadAsStringAsync().Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    driveState = JsonConvert.DeserializeObject<TeslaResponse<DriveState>>(responseString).Content;
+                }
+            }
+
+            return driveState;
         }
 
 

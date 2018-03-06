@@ -49,6 +49,37 @@ namespace MyTesla.Mobile
                 {
                     pref.Summary = $"Monitoring ends at {this.activityContext.EndTime}";
                 }
+
+                if (key == Constants.PrefKeys.SETTING_REMINDER_NOTIFICATIONS_ENABLED)
+                {
+                    var serviceIntent = new Intent(this.Context, typeof(ChargeCheckService));
+                    var on = (pref as SwitchPreference).Checked;
+
+                    if (on)
+                    {
+                        try
+                        {
+                            var component = this.Activity.StartService(serviceIntent);
+
+                            if (component != null)
+                            {
+
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.ToString());
+                        }
+                    }
+                    else
+                    {
+                        var result = this.Activity.StopService(serviceIntent);
+                    }
+                }
+                else
+                {
+                    ValidateNotificationCapabilities();
+                }
             }
 
 
@@ -75,12 +106,44 @@ namespace MyTesla.Mobile
                 frequencyPref.Summary = $"Check every {this.activityContext.CheckFrequency} hours";
                 startTimePref.Summary = $"Monitoring starts at {this.activityContext.StartTime}";
                 endTimePref.Summary = $"Monitoring ends at {this.activityContext.EndTime}";
+
+                ValidateNotificationCapabilities();
             }
 
 
             public override void OnPause() {
                 PreferenceManager.SharedPreferences.UnregisterOnSharedPreferenceChangeListener(this);
                 base.OnPause();
+            }
+
+
+            protected void ValidateNotificationCapabilities()
+            {
+                var isCapable = true;
+
+                if (this.activityContext.ChargingLocation == null)
+                {
+                    isCapable = false;
+                }
+
+                if (String.IsNullOrEmpty(this.activityContext.StartTime))
+                {
+                    isCapable = false;
+                }
+
+                if (String.IsNullOrEmpty(this.activityContext.EndTime))
+                {
+                    isCapable = false;
+                }
+
+                var pref = FindPreference(Constants.PrefKeys.SETTING_REMINDER_NOTIFICATIONS_ENABLED);
+                pref.Enabled = isCapable;
+
+                if (!isCapable)
+                {
+                    (pref as SwitchPreference).Checked = false;
+                    pref.Summary = "Disabled until all required settings are configured.";
+                }
             }
 
         }

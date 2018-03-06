@@ -32,6 +32,8 @@ namespace MyTesla.Mobile
             public static string SETTING_CHECK_FREQUENCY = "checkFrequency";
             public static string SETTING_START_TIME = "startTime";
             public static string SETTING_END_TIME = "endTime";
+
+            public static string SETTINGS_CONFIGURATION_REMINDER = "SETTINGS_CONFIGURATION_REMINDER";
         }
     }
 }
